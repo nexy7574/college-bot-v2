@@ -1,14 +1,13 @@
 import datetime
-import traceback
-
-import toml
-import discord
 import logging
-from pathlib import Path
-from rich.logging import RichHandler
+import traceback
 from logging import FileHandler
-from discord.ext import commands
+from pathlib import Path
 
+import discord
+import toml
+from discord.ext import commands
+from rich.logging import RichHandler
 
 log = logging.getLogger("jimmy")
 

@@ -1,2 +1,6 @@
 [jimmy]
-token = "foo"
+token = "token"
+debug_guilds = [994710566612500550]
+
+[logging]
+level = "DEBUG"

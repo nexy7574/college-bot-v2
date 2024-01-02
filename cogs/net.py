@@ -1,15 +1,15 @@
+import asyncio
 import io
 import os
+import re
+import time
 import typing
 
 import discord
-from rich.console import Console
-import time
-import re
-from dns import asyncresolver
-from rich.tree import Tree
-import asyncio
 from discord.ext import commands
+from dns import asyncresolver
+from rich.console import Console
+from rich.tree import Tree
 
 
 class NetworkCog(commands.Cog):

@@ -1,9 +1,12 @@
 wheel>=0.42
 setuptools>=69
 yt-dlp @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
-py-cord==2.4.1
+# py-cord==2.4.1
+py-cord @ git+https://github.com/Pycord-Development/pycord.git
 httpx==0.26
 psycopg==3.1.16
 toml==0.10.2
 pillow==10.2
 selenium==4.16
+rich==13.7
+dnspython==2.4.2
