@@ -1,7 +1,22 @@
 FROM python:3.11-bookworm
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y traceroute iputils-ping dnsutils net-tools git chromium chromium-driver chromium-sandbox chromium-shell
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    traceroute \
+    iputils-ping \
+    dnsutils \
+    net-tools \
+    git \
+    chromium \
+    chromium-driver \
+    chromium-sandbox \
+    chromium-shell \
+    ffmpeg \
+    imagemagick \
+    whois \
+    wget \
+    curl \
+    htop
 
 RUN pip install --upgrade --break-system-packages pip wheel setuptools
 
