@@ -11,11 +11,7 @@ from rich.logging import RichHandler
 
 log = logging.getLogger("jimmy")
 
-try:
-    CONFIG = toml.load('config.toml')
-except FileNotFoundError:
-    log.critical("Unable to locate config.toml.", exc_info=True)
-    raise
+
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s %(message)s",

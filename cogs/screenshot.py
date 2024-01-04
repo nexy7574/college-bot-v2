@@ -18,15 +18,15 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 class ScreenshotCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.log = logging.getLogger("jimmy.cogs.screenshot")
 
         self.chrome_options = ChromeOptions()
         self.chrome_options.add_argument("--headless")
-        self.chrome_options.add_argument("--disable-dev-shm-usage")
-        # self.chrome_options.add_argument("--disable-gpu")
         self.chrome_options.add_argument("--disable-extensions")
         self.chrome_options.add_argument("--incognito")
         if os.getuid() == 0:
             self.chrome_options.add_argument("--no-sandbox")
+            self.log.warning("Running as root, disabling chrome sandbox.")
 
         prefs = {
             "download.open_pdf_in_system_reader": False,
@@ -38,8 +38,6 @@ class ScreenshotCog(commands.Cog):
         self.chrome_options.add_experimental_option(
             "prefs", prefs
         )
-
-        self.log = logging.getLogger("jimmy.cogs.screenshot")
 
     def compress_png(self, input_file: io.BytesIO) -> io.BytesIO:
         img = Image.open(input_file)
@@ -83,32 +81,51 @@ class ScreenshotCog(commands.Cog):
             render_timeout = 30 if eager else 10
         if not url.startswith("http"):
             url = "https://" + url
+        self.log.debug(
+            "User %s (%s) is attempting to screenshot %r with load timeout %d, render timeout %d, %s loading, and "
+            "a %s resolution.",
+            ctx.author,
+            ctx.author.id,
+            url,
+            load_timeout,
+            render_timeout,
+            "eager" if eager else "lazy",
+            resolution
+        )
         parsed = urlparse(url)
         await ctx.respond("Initialising...")
 
         start_init = time.time()
-        service = await asyncio.to_thread(ChromeService)
-        driver: webdriver.Chrome = await asyncio.to_thread(
-            webdriver.Chrome,
-            service=service,
-            options=self.chrome_options
-        )
-        driver.set_page_load_timeout(load_timeout)
-        if resolution:
-            try:
-                width, height = map(int, resolution.split("x"))
-                driver.set_window_size(width, height)
-                if height > 4320 or width > 7680:
-                    return await ctx.respond("Invalid resolution. Max resolution is 7680x4320 (8K).")
-            except ValueError:
-                return await ctx.respond("Invalid resolution. please provide width x height, e.g. 1920x1080")
-        if eager:
-            driver.implicitly_wait(render_timeout)
+        try:
+            service = await asyncio.to_thread(ChromeService)
+            driver: webdriver.Chrome = await asyncio.to_thread(
+                webdriver.Chrome,
+                service=service,
+                options=self.chrome_options
+            )
+            driver.set_page_load_timeout(load_timeout)
+            if resolution:
+                try:
+                    width, height = map(int, resolution.split("x"))
+                    driver.set_window_size(width, height)
+                    if height > 4320 or width > 7680:
+                        return await ctx.respond("Invalid resolution. Max resolution is 7680x4320 (8K).")
+                except ValueError:
+                    return await ctx.respond("Invalid resolution. please provide width x height, e.g. 1920x1080")
+            if eager:
+                driver.implicitly_wait(render_timeout)
+        except Exception as e:
+            await ctx.respond("Failed to initialise browser: " + str(e))
+            raise
         end_init = time.time()
 
         await ctx.edit(content=("Loading webpage..." if not eager else "Loading & screenshotting webpage..."))
         start_request = time.time()
-        await asyncio.to_thread(driver.get, url)
+        try:
+            await asyncio.to_thread(driver.get, url)
+        except Exception as e:
+            await ctx.respond("Failed to get the webpage: " + str(e))
+            raise
         end_request = time.time()
 
         if not eager:
@@ -140,6 +157,7 @@ class ScreenshotCog(commands.Cog):
 
         await ctx.edit(content="Cleaning up...")
         start_cleanup = time.time()
+        await asyncio.to_thread(driver.close)
         await asyncio.to_thread(driver.quit)
         end_cleanup = time.time()
 

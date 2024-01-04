@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl&#10;* Docker file">
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Properly exit the webdriver">
+      <change afterPath="$PROJECT_DIR$/conf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cogs/screenshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/screenshot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +71,8 @@
       <workItem from="1704140889356" duration="166000" />
       <workItem from="1704141061129" duration="2495000" />
       <workItem from="1704224862150" duration="11897000" />
+      <workItem from="1704296563227" duration="780000" />
+      <workItem from="1704317484555" duration="1407000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -93,7 +98,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704236387023</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update the docker image">
+      <option name="closed" value="true" />
+      <created>1704296742685</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1704296742686</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,6 +117,7 @@
     <MESSAGE value="Update gitignore" />
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl" />
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl&#10;* Docker file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl&#10;* Docker file" />
+    <MESSAGE value="Update the docker image" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update the docker image" />
   </component>
 </project>
