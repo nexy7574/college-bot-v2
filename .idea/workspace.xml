@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="FIx unicode" />
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix stupid aiohttp base url req" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,7 +76,7 @@
       <workItem from="1704296563227" duration="780000" />
       <workItem from="1704317484555" duration="1407000" />
       <workItem from="1704572901106" duration="125000" />
-      <workItem from="1704573038888" duration="5092000" />
+      <workItem from="1704573038888" duration="5416000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -166,7 +166,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704578097496</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Remove top level import">
+      <option name="closed" value="true" />
+      <created>1704578179912</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578179912</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Fix stupid aiohttp base url req">
+      <option name="closed" value="true" />
+      <created>1704578291055</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578291055</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,6 +201,8 @@
     <MESSAGE value="Fix logging" />
     <MESSAGE value="Load cogs.ollama" />
     <MESSAGE value="FIx unicode" />
-    <option name="LAST_COMMIT_MESSAGE" value="FIx unicode" />
+    <MESSAGE value="Remove top level import" />
+    <MESSAGE value="Fix stupid aiohttp base url req" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix stupid aiohttp base url req" />
   </component>
 </project>

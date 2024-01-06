@@ -240,7 +240,7 @@ class Ollama(commands.Cog):
                         if line.get("done"):
                             embed.title = "Done!"
                             embed.color = discord.Color.green()
-                        embed.description += line["text"]
+                        embed.description += line["response"]
                         if len(embed.description) >= 4096:
                             embed.description = embed.description[:4093] + "..."
                             break
