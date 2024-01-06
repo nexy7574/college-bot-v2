@@ -8,6 +8,7 @@ import time
 from urllib.parse import urlparse
 
 import discord
+import selenium.common
 from discord.ext import commands
 from PIL import Image
 from selenium import webdriver
@@ -123,6 +124,11 @@ class ScreenshotCog(commands.Cog):
         start_request = time.time()
         try:
             await asyncio.to_thread(driver.get, url)
+        except selenium.common.WebDriverException as e:
+            if "TimeoutException" in str(e):
+                return await ctx.respond("Timed out while loading webpage.")
+            else:
+                return await ctx.respond("Failed to load webpage:\n```\n%s\n```" % str(e.msg))
         except Exception as e:
             await ctx.respond("Failed to get the webpage: " + str(e))
             raise

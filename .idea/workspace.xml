@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix ollama">
-      <change beforePath="$PROJECT_DIR$/src/cogs/ollama.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/ollama.py" afterDir="false" />
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Better log ollama">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cogs/screenshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/screenshot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +80,7 @@
       <workItem from="1704296563227" duration="780000" />
       <workItem from="1704317484555" duration="1407000" />
       <workItem from="1704572901106" duration="125000" />
-      <workItem from="1704573038888" duration="5748000" />
+      <workItem from="1704573038888" duration="7123000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -192,7 +194,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704578625479</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Improve ollama UI">
+      <option name="closed" value="true" />
+      <created>1704578853090</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578853090</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Better log ollama">
+      <option name="closed" value="true" />
+      <created>1704579168064</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1704579168064</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -214,6 +232,8 @@
     <MESSAGE value="Remove top level import" />
     <MESSAGE value="Fix stupid aiohttp base url req" />
     <MESSAGE value="Fix ollama" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ollama" />
+    <MESSAGE value="Improve ollama UI" />
+    <MESSAGE value="Better log ollama" />
+    <option name="LAST_COMMIT_MESSAGE" value="Better log ollama" />
   </component>
 </project>
