@@ -1,0 +1,10 @@
+services:
+  jimmy:
+    container_name: jimmy-v2
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./config.toml:/app/config.toml
+      - ./jimmy.log:/app/jimmy.log
+      - /dev/dri:/dev/dri
+
