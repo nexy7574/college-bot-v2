@@ -8,7 +8,7 @@ from fnmatch import fnmatch
 import aiohttp
 import discord
 from discord.ext import commands
-from ..conf import CONFIG
+from conf import CONFIG
 
 
 SERVER_KEYS = list(CONFIG["ollama"].keys())

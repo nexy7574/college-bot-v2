@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix logging">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="FIx unicode" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +76,7 @@
       <workItem from="1704296563227" duration="780000" />
       <workItem from="1704317484555" duration="1407000" />
       <workItem from="1704572901106" duration="125000" />
-      <workItem from="1704573038888" duration="4939000" />
+      <workItem from="1704573038888" duration="5092000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -153,7 +150,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704577763897</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Load cogs.ollama">
+      <option name="closed" value="true" />
+      <created>1704578020714</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578020714</updated>
+    </task>
+    <task id="LOCAL-00011" summary="FIx unicode">
+      <option name="closed" value="true" />
+      <created>1704578097496</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578097496</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -170,6 +183,8 @@
     <MESSAGE value="Move to SRC dir, add log suppression, add ollama" />
     <MESSAGE value="Fix docker compose" />
     <MESSAGE value="Fix logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix logging" />
+    <MESSAGE value="Load cogs.ollama" />
+    <MESSAGE value="FIx unicode" />
+    <option name="LAST_COMMIT_MESSAGE" value="FIx unicode" />
   </component>
 </project>
