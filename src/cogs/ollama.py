@@ -210,9 +210,11 @@ class Ollama(commands.Cog):
 
             embed = discord.Embed(
                 title="Generating response...",
-                description=">>> \u200b",
-                color=discord.Color.blurple()
+                description=">>> ",
+                color=discord.Color.blurple(),
+                timestamp=discord.utils.utcnow()
             )
+            await ctx.edit(embed=embed)
             async with session.post(
                 "/api/generate",
                 json={
@@ -241,6 +243,7 @@ class Ollama(commands.Cog):
                             embed.title = "Done!"
                             embed.color = discord.Color.green()
                         embed.description += line["response"]
+                        embed.timestamp = discord.utils.utcnow()
                         if len(embed.description) >= 4096:
                             embed.description = embed.description[:4093] + "..."
                             break
