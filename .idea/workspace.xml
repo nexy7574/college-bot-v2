@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix stupid aiohttp base url req" />
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix ollama">
+      <change beforePath="$PROJECT_DIR$/src/cogs/ollama.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/ollama.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,7 +78,7 @@
       <workItem from="1704296563227" duration="780000" />
       <workItem from="1704317484555" duration="1407000" />
       <workItem from="1704572901106" duration="125000" />
-      <workItem from="1704573038888" duration="5416000" />
+      <workItem from="1704573038888" duration="5748000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -182,7 +184,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704578291055</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Fix ollama">
+      <option name="closed" value="true" />
+      <created>1704578625479</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1704578625479</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,6 +213,7 @@
     <MESSAGE value="FIx unicode" />
     <MESSAGE value="Remove top level import" />
     <MESSAGE value="Fix stupid aiohttp base url req" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix stupid aiohttp base url req" />
+    <MESSAGE value="Fix ollama" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ollama" />
   </component>
 </project>

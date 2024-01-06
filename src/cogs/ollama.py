@@ -144,7 +144,9 @@ class Ollama(commands.Cog):
             await ctx.respond(embed=embed)
 
             try:
+                self.log.debug("Connecting to %r", server_config["base_url"])
                 async with session.post("/api/show", json={"name": model}) as resp:
+                    self.log.debug("%r responded.", server_config["base_url"])
                     if resp.status not in [404, 200]:
                         embed = discord.Embed(
                             url=resp.url,
@@ -166,6 +168,7 @@ class Ollama(commands.Cog):
                 return await ctx.edit(embed=embed)
 
             if resp.status == 404:
+                self.log.debug("Beginning download of %r", model)
                 def progress_bar(value: float, action: str = None):
                     bar = "\N{large green square}" * round(value / 10)
                     bar += "\N{white large square}" * (10 - len(bar))
@@ -207,6 +210,8 @@ class Ollama(commands.Cog):
                             embed.fields[0].value = progress_bar(percent, line["status"])
                             await ctx.edit(embed=embed)
                             last_update = time.time()
+            else:
+                self.log.debug("Model %r already exists on server.", model)
 
             embed = discord.Embed(
                 title="Generating response...",
@@ -215,6 +220,7 @@ class Ollama(commands.Cog):
                 timestamp=discord.utils.utcnow()
             )
             await ctx.edit(embed=embed)
+            self.log.debug("Beginning to generate response.")
             async with session.post(
                 "/api/generate",
                 json={
@@ -242,7 +248,7 @@ class Ollama(commands.Cog):
                         if line.get("done"):
                             embed.title = "Done!"
                             embed.color = discord.Color.green()
-                        embed.description += line["response"]
+                        embed.description += line["response"].strip()
                         embed.timestamp = discord.utils.utcnow()
                         if len(embed.description) >= 4096:
                             embed.description = embed.description[:4093] + "..."
