@@ -24,8 +24,7 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install -Ur /tmp/requirements.txt --break-system-packages --no-input
 
 WORKDIR /app
-COPY main.py /app
-COPY cookies.txt /app
+COPY ./ /app/
 COPY cogs/ /app/cogs/
 
 CMD ["python", "main.py"]
