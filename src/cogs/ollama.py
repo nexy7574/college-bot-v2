@@ -167,7 +167,7 @@ class Ollama(commands.Cog):
 
             if resp.status == 404:
                 def progress_bar(value: float, action: str = None):
-                    bar = "\N{green large square}" * round(value / 10)
+                    bar = "\N{large green square}" * round(value / 10)
                     bar += "\N{white large square}" * (10 - len(bar))
                     bar += f" {value:.2f}%"
                     if action:
