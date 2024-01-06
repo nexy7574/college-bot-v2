@@ -45,6 +45,7 @@ bot = commands.Bot(
 bot.load_extension("cogs.ytdl")
 bot.load_extension("cogs.net")
 bot.load_extension("cogs.screenshot")
+bot.load_extension("cogs.ollama")
 
 
 @bot.event
