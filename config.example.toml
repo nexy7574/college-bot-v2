@@ -1,6 +1,22 @@
 [jimmy]
-token = "token"
-debug_guilds = [994710566612500550]
+token = "token"  # the bot token
+debug_guilds = [994710566612500550]  # server IDs to create slash commands in. Set to null for all guilds.
 
 [logging]
-level = "DEBUG"
+level = "DEBUG"  # can be one of DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+[ollama.internal]
+# name is "internal"
+owner = 421698654189912064  # who owns the server
+allowed_models = [
+    "*",  # for all models
+    "llama2-uncensored:latest"  # for a specific tag.
+    # Note that every model has a tag called "latest" which is the most recent version.
+]
+base_url = "http://ollama:11434/api"  # this is the default if you're running via docker compose
+
+[ollama.external]
+owner = 421698654189912064
+allowed_models = ["*"]
+base_url = "http://example.com/api"
+

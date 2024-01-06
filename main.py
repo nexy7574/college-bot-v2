@@ -8,7 +8,7 @@ import discord
 import toml
 from discord.ext import commands
 from rich.logging import RichHandler
-from config import CONFIG
+from conf import CONFIG
 
 log = logging.getLogger("jimmy")
 
