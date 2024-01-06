@@ -144,7 +144,7 @@ class Ollama(commands.Cog):
             await ctx.respond(embed=embed)
 
             try:
-                async with session.post("/show", json={"name": model}) as resp:
+                async with session.post("/api/show", json={"name": model}) as resp:
                     if resp.status not in [404, 200]:
                         embed = discord.Embed(
                             url=resp.url,
@@ -185,7 +185,7 @@ class Ollama(commands.Cog):
 
                 last_update = time.time()
 
-                async with session.post("/pull", json={"name": model, "stream": True}, timeout=None) as response:
+                async with session.post("/api/pull", json={"name": model, "stream": True}, timeout=None) as response:
                     if response.status != 200:
                         embed = discord.Embed(
                             url=response.url,
@@ -214,7 +214,7 @@ class Ollama(commands.Cog):
                 color=discord.Color.blurple()
             )
             async with session.post(
-                "/generate",
+                "/api/generate",
                 json={
                     "model": model,
                     "prompt": query,
