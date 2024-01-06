@@ -13,8 +13,6 @@ log = logging.getLogger("jimmy")
 CONFIG.setdefault("logging", {})
 
 logging.basicConfig(
-    filename=CONFIG["logging"].get("file", "jimmy.log"),
-    filemode="a",
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level=CONFIG["logging"].get("level", "INFO"),
@@ -25,6 +23,12 @@ logging.basicConfig(
             show_path=False,
             markup=True
         ),
+        FileHandler(
+            filename=CONFIG["logging"].get("file", "jimmy.log"),
+            mode="a",
+            encoding="utf-8",
+            errors="replace"
+        )
     ]
 )
 for logger in CONFIG["logging"].get("suppress", []):
