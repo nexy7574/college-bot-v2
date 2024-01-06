@@ -4,11 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Properly exit the webdriver">
-      <change afterPath="$PROJECT_DIR$/conf.py" afterDir="false" />
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Move to SRC dir, add log suppression, add ollama">
+      <change afterPath="$PROJECT_DIR$/src/cogs/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/cogs/ollama.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/college-bot-2.0.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/college-bot-2.0.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cogs/screenshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/screenshot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/ollama-prompt.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/ollama-prompt.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cogs/net.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/net.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cogs/screenshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/screenshot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cogs/ytdl.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/ytdl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.example.toml" beforeDir="false" afterPath="$PROJECT_DIR$/config.example.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,27 +40,34 @@
 }</component>
   <component name="ProjectId" id="2aMdul0tGldqewjmOMm9WhRXLP9" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\nexy7\PycharmProjects\college-bot-v2\src" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -73,6 +90,8 @@
       <workItem from="1704224862150" duration="11897000" />
       <workItem from="1704296563227" duration="780000" />
       <workItem from="1704317484555" duration="1407000" />
+      <workItem from="1704572901106" duration="125000" />
+      <workItem from="1704573038888" duration="4362000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -106,7 +125,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704296742686</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fix main.py not properly import conf.py">
+      <option name="closed" value="true" />
+      <created>1704574394695</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1704574394695</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fix Dockerfile">
+      <option name="closed" value="true" />
+      <created>1704574685266</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1704574685266</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,6 +153,9 @@
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl" />
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl&#10;* Docker file" />
     <MESSAGE value="Update the docker image" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update the docker image" />
+    <MESSAGE value="Fix main.py not properly import conf.py" />
+    <MESSAGE value="Fix Dockerfile" />
+    <MESSAGE value="Move to SRC dir, add log suppression, add ollama" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move to SRC dir, add log suppression, add ollama" />
   </component>
 </project>

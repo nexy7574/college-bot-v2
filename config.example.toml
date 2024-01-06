@@ -3,7 +3,17 @@ token = "token"  # the bot token
 debug_guilds = [994710566612500550]  # server IDs to create slash commands in. Set to null for all guilds.
 
 [logging]
-level = "DEBUG"  # can be one of DEBUG, INFO, WARNING, ERROR, CRITICAL
+level = "DEBUG"  # can be one of DEBUG, INFO, WARNING, ERROR, CRITICAL. Defaults to INFO
+file = "jimmy.log"  # if omitted, defaults to jimmy.log. Always pretty prints to stdout.
+mode = "a"  # can be over(w)rite or (a)ppend. Defaults to append.
+suppress = [
+    "discord.client",
+    "discord.gateway",
+    "discord.http",
+    "selenium.webdriver.remote.remote_connection"  # make sure to include this one to prevent /screenshot from putting
+    # literal images (in base64) in your logs.
+]
+# All the loggers specified here will have their log level set to WARNING.
 
 [ollama.internal]
 # name is "internal"

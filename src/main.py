@@ -1,36 +1,35 @@
 import datetime
 import logging
+import sys
 import traceback
 from logging import FileHandler
-from pathlib import Path
 
 import discord
-import toml
 from discord.ext import commands
 from rich.logging import RichHandler
 from conf import CONFIG
 
 log = logging.getLogger("jimmy")
-
-
+CONFIG.setdefault("logging", {})
 
 logging.basicConfig(
+    filename=CONFIG["logging"].get("file", "jimmy.log"),
+    filemode="a",
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    level=CONFIG.get("logging", {}).get("level", "INFO"),
+    level=CONFIG["logging"].get("level", "INFO"),
     handlers=[
         RichHandler(
-            level=CONFIG.get("logging", {}).get("level", "INFO"),
+            level=CONFIG["logging"].get("level", "INFO"),
             show_time=False,
             show_path=False,
             markup=True
         ),
-        FileHandler(
-            filename=CONFIG.get("logging", {}).get("file", "jimmy.log"),
-            mode="a",
-        )
     ]
 )
+for logger in CONFIG["logging"].get("suppress", []):
+    logging.getLogger(logger).setLevel(logging.WARNING)
+    log.info(f"Suppressed logging for {logger}")
 
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("h!", "H!"),
@@ -84,4 +83,7 @@ async def on_application_command_completion(ctx: discord.ApplicationContext):
     )
 
 
+if not CONFIG["jimmy"].get("token"):
+    log.critical("No token specified in config.toml. Exiting. (hint: set jimmy.token in config.toml)")
+    sys.exit(1)
 bot.run(CONFIG["jimmy"]["token"])
