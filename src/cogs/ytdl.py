@@ -298,6 +298,7 @@ class YTDLCog(commands.Cog):
                 previous = await self.get_saved(webpage_url, extracted_info["format_id"])
                 if previous:
                     await ctx.edit(
+                        content=previous,
                         embed=discord.Embed(
                             title=f"Downloaded {title}!",
                             description="Used previously downloaded attachment.",
