@@ -244,15 +244,15 @@ class Ollama(commands.Cog):
 
                 last_update = time.time()
                 async for line in self.ollama_stream(response.content):
+                    embed.description += line["response"].strip()
+                    embed.timestamp = discord.utils.utcnow()
+                    if len(embed.description) >= 4096:
+                        embed.description = embed.description[:4093] + "..."
+                        line["done"] = True
                     if line.get("done", False) is True or time.time() >= (last_update + 5.1):
                         if line.get("done"):
                             embed.title = "Done!"
                             embed.color = discord.Color.green()
-                        embed.description += line["response"].strip()
-                        embed.timestamp = discord.utils.utcnow()
-                        if len(embed.description) >= 4096:
-                            embed.description = embed.description[:4093] + "..."
-                            break
                         await ctx.edit(embed=embed)
                         last_update = time.time()
 
