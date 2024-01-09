@@ -92,7 +92,7 @@ class YTDLCog(commands.Cog):
         """
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
-            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
             await db.execute(
                 """
                 INSERT INTO downloads (key, message_id, channel_id, webpage_url, format_id, attachment_index)
@@ -112,7 +112,7 @@ class YTDLCog(commands.Cog):
         """
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
-            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
             cursor = await db.execute(
                 "SELECT message_id, channel_id, attachment_index FROM downloads WHERE key=?",
                 (_hash,)
