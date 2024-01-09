@@ -93,6 +93,13 @@ class YTDLCog(commands.Cog):
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
             _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
+            self.log.debug(
+                "Saving %r (%r:%r) with message %d>%d, index %d",
+                _hash,
+                message.channel.id,
+                message.id,
+                attachment_index
+            )
             await db.execute(
                 """
                 INSERT INTO downloads (key, message_id, channel_id, webpage_url, format_id, attachment_index)
@@ -113,26 +120,37 @@ class YTDLCog(commands.Cog):
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
             _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
+            self.log.debug(
+                "Attempting to find a saved download for '%s:%s' (%r).",
+                webpage_url,
+                format_id,
+                _hash
+            )
             cursor = await db.execute(
                 "SELECT message_id, channel_id, attachment_index FROM downloads WHERE key=?",
                 (_hash,)
             )
             entry = await cursor.fetchone()
             if not entry:
+                self.log.debug("There was no saved download.")
                 return
             message_id, channel_id, attachment_index = entry
             channel = self.bot.get_channel(channel_id)
             if not channel:
+                self.log.debug("Channel %r was not found.", channel_id)
                 return
             try:
                 message = await channel.fetch_message(message_id)
             except discord.HTTPException:
+                self.log.debug("%r did not contain a message with ID %r", channel, message_id)
                 await db.execute("DELETE FROM downloads WHERE key=?", (_hash,))
                 return
 
             try:
-                return message.attachments[attachment_index].url
+                url = message.attachments[attachment_index].url
+                self.log.debug("Found URL %r, returning.", url)
             except IndexError:
+                self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
 
 

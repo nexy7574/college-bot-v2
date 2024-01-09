@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix aiosqlite again">
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Forgot to hexdigest">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cogs/ytdl.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/ytdl.py" afterDir="false" />
     </list>
@@ -81,7 +81,7 @@
       <workItem from="1704572901106" duration="125000" />
       <workItem from="1704573038888" duration="7749000" />
       <workItem from="1704760229948" duration="946000" />
-      <workItem from="1704790508193" duration="2436000" />
+      <workItem from="1704790508193" duration="2855000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -275,7 +275,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704793106430</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="I hate SQL">
+      <option name="closed" value="true" />
+      <created>1704793198163</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1704793198163</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Forgot to hexdigest">
+      <option name="closed" value="true" />
+      <created>1704793320744</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1704793320744</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -283,7 +299,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Update gitignore" />
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl" />
     <MESSAGE value="Beta 1&#10;&#10;* Screenshot (unpolished, functional)&#10;* Dig&#10;* Traceroute&#10;* Whois&#10;* Ping&#10;* yt-dl&#10;* Docker file" />
     <MESSAGE value="Update the docker image" />
@@ -307,6 +322,8 @@
     <MESSAGE value="Allow re-use of previous downloads" />
     <MESSAGE value="Fix aiosqlite" />
     <MESSAGE value="Fix aiosqlite again" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix aiosqlite again" />
+    <MESSAGE value="I hate SQL" />
+    <MESSAGE value="Forgot to hexdigest" />
+    <option name="LAST_COMMIT_MESSAGE" value="Forgot to hexdigest" />
   </component>
 </project>
