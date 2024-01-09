@@ -253,9 +253,13 @@ class Ollama(commands.Cog):
                         line["done"] = True
                     if line.get("done", False) is True or time.time() >= (last_update + 5.1):
                         if line.get("done"):
+                            self.log.debug("Updating message because 'done' is True.")
                             embed.title = "Done!"
                             embed.color = discord.Color.green()
+                        else:
+                            self.log.debug("Updating message because %.1f > %.1f", time.time(), last_update + 5.1)
                         await ctx.edit(embed=embed)
+                        self.log.debug(f"Updating message ({last_update} -> {time.time()})")
                         last_update = time.time()
 
 
