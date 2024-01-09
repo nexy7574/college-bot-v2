@@ -79,7 +79,7 @@ class YTDLCog(commands.Cog):
                 """
             )
             await db.commit()
-        return aiosqlite.connect("./data/ytdl.db")
+        return
 
     async def save_link(self, message: discord.Message, webpage_url: str, format_id: str, attachment_index: int = 0):
         """
@@ -90,7 +90,8 @@ class YTDLCog(commands.Cog):
         :param attachment_index: The index of the attachment. Defaults to 0
         :return: The created hash key
         """
-        async with self._init_db() as db:
+        await self._init_db()
+        async with aiosqlite.connect("./data/ytdl.db") as db:
             _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
             await db.execute(
                 """
@@ -109,7 +110,8 @@ class YTDLCog(commands.Cog):
         :param format_id: The format ID
         :return: the URL, if found and valid.
         """
-        async with self._init_db() as db:
+        await self._init_db()
+        async with aiosqlite.connect("./data/ytdl.db") as db:
             _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
             cursor = await db.execute(
                 "SELECT (message_id, channel_id, attachment_index) FROM downloads WHERE key=?",
