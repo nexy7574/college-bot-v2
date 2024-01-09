@@ -151,6 +151,7 @@ class YTDLCog(commands.Cog):
             try:
                 url = message.attachments[attachment_index].url
                 self.log.debug("Found URL %r, returning.", url)
+                return url
             except IndexError:
                 self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
