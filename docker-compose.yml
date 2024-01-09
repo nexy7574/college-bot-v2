@@ -8,8 +8,10 @@ services:
       - ./config.toml:/app/config.toml
       - ./jimmy.log:/app/jimmy.log
       - /dev/dri:/dev/dri
+      - jimmy-data:/app/data
   ollama:
     image: ollama/ollama:latest
+    container_name: ollama
     restart: unless-stopped
     ports:
       - 11434:11434
@@ -18,4 +20,4 @@ services:
 
 volumes:
   ollama-data:
-
+  jimmy-data:

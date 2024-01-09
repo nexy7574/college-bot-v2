@@ -226,7 +226,6 @@ class Ollama(commands.Cog):
                 json={
                     "model": model,
                     "prompt": query,
-                    # "format": "json",
                     "system": system_prompt,
                     "stream": True
                 }
@@ -259,6 +258,7 @@ class Ollama(commands.Cog):
                         await ctx.edit(embed=embed)
                         self.log.debug(f"Updating message ({last_update} -> {time.time()})")
                         last_update = time.time()
+                self.log.debug("Ollama finished consuming.")
                 embed.title = "Done!"
                 embed.color = discord.Color.green()
                 await ctx.edit(embed=embed)

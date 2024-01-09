@@ -10,3 +10,4 @@ pillow==10.2
 selenium==4.16
 rich==13.7
 dnspython==2.4.2
+aiosqlite==0.19.0

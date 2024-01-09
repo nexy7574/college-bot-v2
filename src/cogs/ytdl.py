@@ -1,5 +1,6 @@
 import asyncio
 import functools
+import hashlib
 import logging
 import tempfile
 import textwrap
@@ -8,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import discord
+import aiosqlite
 import yt_dlp
 from discord.ext import commands
 
@@ -61,6 +63,76 @@ class YTDLCog(commands.Cog):
             "instagram.com": 0xe1306c,
             "shronk.net": 0xFFF952
         }
+
+    async def _init_db(self):
+        async with aiosqlite.connect("./data/ytdl.db") as db:
+            await db.execute(
+                """
+                CREATE TABLE IF NOT EXISTS downloads (
+                    key TEXT PRIMARY KEY,
+                    message_id INTEGER NOT NULL UNIQUE,
+                    channel_id INTEGER NOT NULL,
+                    webpage_url TEXT NOT NULL,
+                    format_id TEXT NOT NULL,
+                    attachment_index INTEGER NOT NULL DEFAULT 0,
+                )
+                """
+            )
+            await db.commit()
+        return aiosqlite.connect("./data/ytdl.db")
+
+    async def save_link(self, message: discord.Message, webpage_url: str, format_id: str, attachment_index: int = 0):
+        """
+        Saves a link to discord to prevent having to re-download it.
+        :param message: The download message with the attachment.
+        :param webpage_url: The "webpage_url" key of the metadata
+        :param format_id: The "format_Id" key of the metadata
+        :param attachment_index: The index of the attachment. Defaults to 0
+        :return: The created hash key
+        """
+        async with self._init_db() as db:
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
+            await db.execute(
+                """
+                INSERT INTO downloads (key, message_id, channel_id, webpage_url, format_id, attachment_index)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (_hash, message.id, message.channel.id, webpage_url, format_id, attachment_index)
+            )
+            await db.commit()
+            return _hash
+
+    async def get_saved(self, webpage_url: str, format_id: str) -> typing.Optional[str]:
+        """
+        Attempts to retrieve the attachment URL of a previously saved download.
+        :param webpage_url: The webpage url
+        :param format_id: The format ID
+        :return: the URL, if found and valid.
+        """
+        async with self._init_db() as db:
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
+            cursor = await db.execute(
+                "SELECT (message_id, channel_id, attachment_index) FROM downloads WHERE key=?",
+                (_hash,)
+            )
+            entry = await cursor.fetchone()
+            if not entry:
+                return
+            message_id, channel_id, attachment_index = entry
+            channel = self.bot.get_channel(channel_id)
+            if not channel:
+                return
+            try:
+                message = await channel.fetch_message(message_id)
+            except discord.HTTPException:
+                await db.execute("DELETE FROM downloads WHERE key=?", (_hash,))
+                return
+
+            try:
+                return message.attachments[attachment_index].url
+            except IndexError:
+                return
+
 
     @commands.slash_command(name="yt-dl")
     @commands.max_concurrency(1, wait=False)
@@ -200,6 +272,21 @@ class YTDLCog(commands.Cog):
                         colour=self.colours.get(domain, discord.Colour.og_blurple())
                     ).set_footer(text="Downloading (step 2/10)").set_thumbnail(url=thumbnail_url)
                 )
+                previous = await self.get_saved(webpage_url, extracted_info["format_id"])
+                if previous:
+                    await ctx.edit(
+                        embed=discord.Embed(
+                            title=f"Downloaded {title}!",
+                            description="Used previously downloaded attachment.",
+                            colour=discord.Colour.green(),
+                            timestamp=discord.utils.utcnow(),
+                            url=previous,
+                            fields=[
+                                discord.EmbedField(name="URL", value=previous, inline=False)
+                            ]
+                        ).set_image(url=previous)
+                    )
+                    return
                 try:
                     await asyncio.to_thread(functools.partial(downloader.download, [url]))
                 except yt_dlp.DownloadError as e:
