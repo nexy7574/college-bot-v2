@@ -96,6 +96,8 @@ class YTDLCog(commands.Cog):
             self.log.debug(
                 "Saving %r (%r:%r) with message %d>%d, index %d",
                 _hash,
+                webpage_url,
+                format_id,
                 message.channel.id,
                 message.id,
                 attachment_index
