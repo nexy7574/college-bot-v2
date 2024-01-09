@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Allow re-use of previous downloads">
+    <list default="true" id="aa6d62a8-d64d-4a60-a85f-8d9fa52b6b49" name="Changes" comment="Fix aiosqlite again">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cogs/ytdl.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cogs/ytdl.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +81,7 @@
       <workItem from="1704572901106" duration="125000" />
       <workItem from="1704573038888" duration="7749000" />
       <workItem from="1704760229948" duration="946000" />
-      <workItem from="1704790508193" duration="2280000" />
+      <workItem from="1704790508193" duration="2436000" />
     </task>
     <task id="LOCAL-00001" summary="Update gitignore">
       <option name="closed" value="true" />
@@ -258,7 +259,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704792896546</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Fix aiosqlite">
+      <option name="closed" value="true" />
+      <created>1704793040237</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1704793040237</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Fix aiosqlite again">
+      <option name="closed" value="true" />
+      <created>1704793106430</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1704793106430</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -288,6 +305,8 @@
     <MESSAGE value="Fix the space strip and JSON output" />
     <MESSAGE value="Fix the last few words not being added" />
     <MESSAGE value="Allow re-use of previous downloads" />
-    <option name="LAST_COMMIT_MESSAGE" value="Allow re-use of previous downloads" />
+    <MESSAGE value="Fix aiosqlite" />
+    <MESSAGE value="Fix aiosqlite again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix aiosqlite again" />
   </component>
 </project>

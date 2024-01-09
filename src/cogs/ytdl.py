@@ -114,7 +114,7 @@ class YTDLCog(commands.Cog):
         async with aiosqlite.connect("./data/ytdl.db") as db:
             _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode())
             cursor = await db.execute(
-                "SELECT (message_id, channel_id, attachment_index) FROM downloads WHERE key=?",
+                "SELECT message_id, channel_id, attachment_index FROM downloads WHERE key=?",
                 (_hash,)
             )
             entry = await cursor.fetchone()
