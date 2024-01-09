@@ -109,6 +109,7 @@ class Ollama(commands.Cog):
             query = modal.user_prompt
             if not modal.user_prompt:
                 return
+            await ctx.respond(embed=discord.Embed(description="Loading..."))
             system_prompt = modal.system_prompt or system_prompt
         else:
             await ctx.defer()
