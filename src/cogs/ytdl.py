@@ -417,7 +417,7 @@ class YTDLCog(commands.Cog):
                     )
                 )
                 try:
-                    await ctx.edit(
+                    msg = await ctx.edit(
                         file=upload_file,
                         embed=discord.Embed(
                             title=f"Downloaded {title}!",
@@ -426,7 +426,7 @@ class YTDLCog(commands.Cog):
                             url=webpage_url
                         )
                     )
-                    await self.save_link(ctx.message, webpage_url, chosen_format_id)
+                    await self.save_link(msg, webpage_url, chosen_format_id)
                 except discord.HTTPException as e:
                     self.log.error(e, exc_info=True)
                     return await ctx.edit(
