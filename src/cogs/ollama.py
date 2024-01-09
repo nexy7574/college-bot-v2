@@ -1,8 +1,11 @@
 import collections
 import json
 import logging
+from pydoc import describe
+import textwrap
 import time
 import typing
+import io
 from fnmatch import fnmatch
 
 import aiohttp
@@ -242,26 +245,42 @@ class Ollama(commands.Cog):
                     return await ctx.edit(embed=embed)
 
                 last_update = time.time()
+                embed.add_field(
+                    name="Prompt",
+                    value=">>> " + textwrap.shorten(query, width=1020, placeholder="..."),
+                    inline=False
+                )
+                buffer = io.StringIO()
                 async for line in self.ollama_stream(response.content):
+                    buffer.write(line["response"])
                     embed.description += line["response"]
                     embed.timestamp = discord.utils.utcnow()
                     if len(embed.description) >= 4096:
-                        embed.description = embed.description[:4093] + "..."
-                        line["done"] = True
-                    if line.get("done", False) is True or time.time() >= (last_update + 5.1):
-                        if line.get("done"):
-                            self.log.debug("Updating message because 'done' is True.")
-                            embed.title = "Done!"
-                            embed.color = discord.Color.green()
-                        else:
-                            self.log.debug("Updating message because %.1f > %.1f", time.time(), last_update + 5.1)
+                        embed.description = embed.description = "..." + line["response"]
+                    if time.time() >= (last_update + 5.1):
                         await ctx.edit(embed=embed)
                         self.log.debug(f"Updating message ({last_update} -> {time.time()})")
                         last_update = time.time()
                 self.log.debug("Ollama finished consuming.")
                 embed.title = "Done!"
                 embed.color = discord.Color.green()
-                await ctx.edit(embed=embed)
+
+                value = buffer.getvalue()
+                if len(value) >= 4096:
+                    embeds = [discord.Embed(title="Done!", colour=discord.Color.green())]
+                    
+                    current_page = ""
+                    for word in value.split():
+                        if len(current_page) + len(word) >= 4096:
+                            embeds.append(discord.Embed(description=current_page))
+                            current_page = ""
+                        current_page += word + " "
+                    else:
+                        embeds.append(discord.Embed(description=current_page))
+                    
+                    await ctx.edit(embeds=embeds)
+                else:
+                    await ctx.edit(embed=embed)
 
 def setup(bot):
     bot.add_cog(Ollama(bot))
