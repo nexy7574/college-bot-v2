@@ -74,7 +74,7 @@ class YTDLCog(commands.Cog):
                     channel_id INTEGER NOT NULL,
                     webpage_url TEXT NOT NULL,
                     format_id TEXT NOT NULL,
-                    attachment_index INTEGER NOT NULL DEFAULT 0,
+                    attachment_index INTEGER NOT NULL DEFAULT 0
                 )
                 """
             )
