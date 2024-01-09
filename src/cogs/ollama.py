@@ -223,7 +223,10 @@ class Ollama(commands.Cog):
                 color=discord.Color.blurple(),
                 timestamp=discord.utils.utcnow()
             )
-            await ctx.edit(embed=embed)
+            try:
+                await ctx.edit(embed=embed)
+            except discord.NotFound:
+                await ctx.respond(embed=embed)
             self.log.debug("Beginning to generate response.")
             async with session.post(
                 "/api/generate",
