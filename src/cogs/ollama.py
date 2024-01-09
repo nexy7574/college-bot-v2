@@ -226,7 +226,7 @@ class Ollama(commands.Cog):
                 json={
                     "model": model,
                     "prompt": query,
-                    "format": "json",
+                    # "format": "json",
                     "system": system_prompt,
                     "stream": True
                 }
@@ -244,7 +244,9 @@ class Ollama(commands.Cog):
 
                 last_update = time.time()
                 async for line in self.ollama_stream(response.content):
-                    embed.description += line["response"].strip()
+                    if not line["response"].strip("\n\r"):
+                        continue
+                    embed.description += line["response"]
                     embed.timestamp = discord.utils.utcnow()
                     if len(embed.description) >= 4096:
                         embed.description = embed.description[:4093] + "..."
