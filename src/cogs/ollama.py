@@ -244,8 +244,6 @@ class Ollama(commands.Cog):
 
                 last_update = time.time()
                 async for line in self.ollama_stream(response.content):
-                    if not line["response"].strip("\n\r"):
-                        continue
                     embed.description += line["response"]
                     embed.timestamp = discord.utils.utcnow()
                     if len(embed.description) >= 4096:
@@ -261,7 +259,9 @@ class Ollama(commands.Cog):
                         await ctx.edit(embed=embed)
                         self.log.debug(f"Updating message ({last_update} -> {time.time()})")
                         last_update = time.time()
-
+                embed.title = "Done!"
+                embed.color = discord.Color.green()
+                await ctx.edit(embed=embed)
 
 def setup(bot):
     bot.add_cog(Ollama(bot))
