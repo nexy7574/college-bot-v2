@@ -64,7 +64,7 @@ class Client(commands.Bot):
             self.web.cancel()
         await super().close()
 
-bot = commands.Bot(
+bot = Client(
     command_prefix=commands.when_mentioned_or("h!", "H!"),
     case_insensitive=True,
     strip_after_prefix=True,
