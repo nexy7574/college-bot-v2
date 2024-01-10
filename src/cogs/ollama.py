@@ -58,7 +58,6 @@ class Ollama(commands.Cog):
                 discord.Option(
                     str,
                     "The query to feed into ollama. Not the system prompt.",
-                    default=None
                 )
             ],
             model: typing.Annotated[
@@ -81,53 +80,7 @@ class Ollama(commands.Cog):
     ):
         with open("./assets/ollama-prompt.txt") as file:
             system_prompt = file.read()
-
-        if query is None:
-            class InputPrompt(discord.ui.Modal):
-                def __init__(self, is_owner: bool):
-                    super().__init__(
-                        discord.ui.InputText(
-                            label="User Prompt",
-                            placeholder="Enter prompt",
-                            min_length=1,
-                            max_length=4000,
-                            style=discord.InputTextStyle.long,
-                        ),
-                        title="Enter prompt",
-                        timeout=120,
-                    )
-                    if is_owner:
-                        self.add_item(
-                            discord.ui.InputText(
-                                label="System Prompt",
-                                placeholder="Enter prompt",
-                                min_length=1,
-                                max_length=4000,
-                                style=discord.InputTextStyle.long,
-                                value=system_prompt,
-                            )
-                        )
-
-                    self.user_prompt = None
-                    self.system_prompt = system_prompt
-
-                async def callback(self, interaction: discord.Interaction):
-                    self.user_prompt = self.children[0].value
-                    if len(self.children) > 1:
-                        self.system_prompt = self.children[1].value
-                    await interaction.response.defer()
-                    self.stop()
-
-            modal = InputPrompt(await self.bot.is_owner(ctx.author))
-            await ctx.send_modal(modal)
-            await modal.wait()
-            query = modal.user_prompt
-            if not modal.user_prompt:
-                return
-            await ctx.respond(embed=discord.Embed(description="Loading..."))
-            system_prompt = modal.system_prompt or system_prompt
-        else:
-            await ctx.defer()
+        await ctx.defer()
 
         model = model.casefold()
         try:
@@ -153,6 +106,7 @@ class Ollama(commands.Cog):
 
         async with aiohttp.ClientSession(
                 base_url=server_config["base_url"],
+                timeout=None
         ) as session:
             embed = discord.Embed(
                 title="Checking server...",
@@ -238,11 +192,17 @@ class Ollama(commands.Cog):
                 color=discord.Color.blurple(),
                 timestamp=discord.utils.utcnow()
             )
-            try:
-                await ctx.edit(embed=embed)
-            except discord.NotFound:
-                await ctx.respond(embed=embed)
+            embed.add_field(
+                name="Prompt",
+                value=">>> " + textwrap.shorten(query, width=1020, placeholder="..."),
+                inline=False
+            )
+            embed.set_footer(text="Using server %r" % server)
             view = OllamaView(ctx)
+            try:
+                await ctx.edit(embed=embed, view=view)
+            except discord.NotFound:
+                await ctx.respond(embed=embed, view=view)
             self.log.debug("Beginning to generate response.")
             async with session.post(
                 "/api/generate",
@@ -251,7 +211,7 @@ class Ollama(commands.Cog):
                     "prompt": query,
                     "system": system_prompt,
                     "stream": True
-                }
+                },
             ) as response:
                 if response.status != 200:
                     embed = discord.Embed(
@@ -265,27 +225,22 @@ class Ollama(commands.Cog):
                     return await ctx.edit(embed=embed)
 
                 last_update = time.time()
-                embed.add_field(
-                    name="Prompt",
-                    value=">>> " + textwrap.shorten(query, width=1020, placeholder="..."),
-                    inline=False
-                )
-                await ctx.edit(view=view, embed=embed)
                 buffer = io.StringIO()
-                async for line in self.ollama_stream(response.content):
-                    buffer.write(line["response"])
-                    embed.description += line["response"]
-                    embed.timestamp = discord.utils.utcnow()
-                    if len(embed.description) >= 4096:
-                        embed.description = embed.description = "..." + line["response"]
+                if not view.cancel.is_set():
+                    async for line in self.ollama_stream(response.content):
+                        buffer.write(line["response"])
+                        embed.description += line["response"]
+                        embed.timestamp = discord.utils.utcnow()
+                        if len(embed.description) >= 4096:
+                            embed.description = embed.description = "..." + line["response"]
 
-                    if view.cancel.is_set():
-                        break
+                        if view.cancel.is_set():
+                            break
 
-                    if time.time() >= (last_update + 5.1):
-                        await ctx.edit(embed=embed)
-                        self.log.debug(f"Updating message ({last_update} -> {time.time()})")
-                        last_update = time.time()
+                        if time.time() >= (last_update + 5.1):
+                            await ctx.edit(embed=embed, view=view)
+                            self.log.debug(f"Updating message ({last_update} -> {time.time()})")
+                            last_update = time.time()
                 view.stop()
                 self.log.debug("Ollama finished consuming.")
                 embed.title = "Done!"
