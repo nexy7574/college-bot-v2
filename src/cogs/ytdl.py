@@ -244,6 +244,20 @@ class YTDLCog(commands.Cog):
                     # noinspection PyTypeChecker
                     extracted_info = await asyncio.to_thread(downloader.extract_info, url, download=False)
                 except yt_dlp.utils.DownloadError as e:
+                    extracted_info = {
+                        "title": "error",
+                        "thumbnail_url": None,
+                        "webpage_url": url,
+                        "format": "error",
+                        "format_id": "-1",
+                        "ext": "wav",
+                        "format_note": str(e),
+                        "resolution": "1x1",
+                        "fps": "1",
+                        "vcodec": "error",
+                        "acodec": "error",
+                        "filesize": 0
+                    }
                     title = "error"
                     description = str(e)
                     thumbnail_url = webpage_url = None
