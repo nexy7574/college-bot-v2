@@ -5,6 +5,7 @@ import os
 import textwrap
 import time
 import typing
+import base64
 import io
 
 from discord.ui import View, button
@@ -104,6 +105,14 @@ class Ollama(commands.Cog):
                     "Whether to give the AI acid, LSD, and other hallucinogens before responding.",
                     default=False
                 )
+            ],
+            image: typing.Annotated[
+                discord.Attachment,
+                discord.Option(
+                    discord.Attachment,
+                    "An image to feed into ollama. Only works with llava.",
+                    default=None
+                )
             ]
     ):
         if context is not None:
@@ -122,6 +131,24 @@ class Ollama(commands.Cog):
         except ValueError:
             model = model + ":latest"
             self.log.debug("Resolved model to %r" % model)
+
+        if image:
+            if fnmatch(model, "llava:*") is False:
+                await ctx.respond("You can only use images with llava.")
+                return
+            elif image.size > 1024 * 1024 * 25:
+                await ctx.respond("Attachment is too large. Maximum size is 25 MB, for sanity. Try compressing it.")
+                return
+            elif not fnmatch(image.content_type, "image/*"):
+                await ctx.respond("Attachment is not an image. Try using a different file.")
+                return
+            else:
+                data = io.BytesIO()
+                await image.save(data)
+                data.seek(0)
+                image_data = base64.b64encode(data.read()).decode("utf-8")
+        else:
+            image_data = None
 
         if server == "next":
             server = self.next_server()
@@ -261,6 +288,8 @@ class Ollama(commands.Cog):
             }
             if context is not None:
                 payload["context"] = self.contexts[context]
+            if image_data:
+                payload["images"] = [image_data]
             async with session.post(
                 "/api/generate",
                 json=payload,
