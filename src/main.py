@@ -47,6 +47,7 @@ class Client(commands.Bot):
         self.web: typing.Optional[asyncio.Task] = None
 
     async def start(self, token: str, *, reconnect: bool = True) -> None:
+        app.state.bot = self
         config = uvicorn.Config(
             app,
             host=CONFIG["server"].get("host", "0.0.0.0"),
