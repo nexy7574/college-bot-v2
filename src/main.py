@@ -119,17 +119,17 @@ async def on_application_command_completion(ctx: discord.ApplicationContext):
 
 
 @bot.message_command(name="Delete Message")
-async def delete_message(ctx: discord.ApplicationContext):
+async def delete_message(ctx: discord.ApplicationContext, message: discord.Message):
     await ctx.defer()
     if not ctx.channel.permissions_for(ctx.me).manage_messages:
-        if ctx.message.author != bot.user:
+        if message.author != bot.user:
             return await ctx.respond("I don't have permission to delete messages in this channel.", delete_after=30)
 
     log.info(
-        "%s deleted message %s>%s: %r", ctx.author, ctx.channel.name, ctx.message.id, ctx.message.content
+        "%s deleted message %s>%s: %r", ctx.author, ctx.channel.name, ctx.message.id, message.content
     )
-    await ctx.message.delete(delay=3)
-    await ctx.respond(f"\N{white heavy check mark} Deleted message by {ctx.message.author.display_name}.")
+    await message.delete(delay=3)
+    await ctx.respond(f"\N{white heavy check mark} Deleted message by {message.author.display_name}.")
     await ctx.delete(delay=15)
 
 
