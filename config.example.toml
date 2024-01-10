@@ -29,4 +29,5 @@ base_url = "http://ollama:11434/api"  # this is the default if you're running vi
 owner = 421698654189912064
 allowed_models = ["*"]
 base_url = "http://example.com/api"
+icon_url = "http://example.com/favicon.png"
 

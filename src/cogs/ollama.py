@@ -197,7 +197,7 @@ class Ollama(commands.Cog):
                 value=">>> " + textwrap.shorten(query, width=1020, placeholder="..."),
                 inline=False
             )
-            embed.set_footer(text="Using server %r" % server)
+            embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
             view = OllamaView(ctx)
             try:
                 await ctx.edit(embed=embed, view=view)
