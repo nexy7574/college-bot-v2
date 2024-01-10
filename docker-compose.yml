@@ -9,6 +9,8 @@ services:
       - ./jimmy.log:/app/jimmy.log
       - /dev/dri:/dev/dri
       - jimmy-data:/app/data
+    ports:
+      - 11444:8080
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
