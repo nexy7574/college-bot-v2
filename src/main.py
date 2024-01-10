@@ -53,7 +53,7 @@ class Client(commands.Bot):
             host=CONFIG["server"].get("host", "0.0.0.0"),
             port=CONFIG["server"].get("port", 8080),
             loop="asyncio",
-            lifespan="on",
+            lifespan="off",
             server_header=False
         )
         server = uvicorn.Server(config=config)
