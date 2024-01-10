@@ -1,7 +1,12 @@
+import asyncio
 import datetime
 import logging
 import sys
 import traceback
+import typing
+
+import uvicorn
+from web import app
 from logging import FileHandler
 
 import discord
@@ -34,6 +39,30 @@ logging.basicConfig(
 for logger in CONFIG["logging"].get("suppress", []):
     logging.getLogger(logger).setLevel(logging.WARNING)
     log.info(f"Suppressed logging for {logger}")
+
+
+class Client(commands.Bot):
+    def __init_(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.web: typing.Optional[asyncio.Task] = None
+
+    async def start(self, token: str, *, reconnect: bool = True) -> None:
+        config = uvicorn.Config(
+            app,
+            host=CONFIG["server"].get("host", "0.0.0.0"),
+            port=CONFIG["server"].get("port", 8080),
+            loop="asyncio",
+            lifespan="on",
+            server_header=False
+        )
+        server = uvicorn.Server(config=config)
+        self.web= self.loop.create_task(server.serve())
+        await super().start(token, reconnect=reconnect)
+
+    async def close(self) -> None:
+        if self.web:
+            self.web.cancel()
+        await super().close()
 
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("h!", "H!"),
@@ -91,4 +120,5 @@ async def on_application_command_completion(ctx: discord.ApplicationContext):
 if not CONFIG["jimmy"].get("token"):
     log.critical("No token specified in config.toml. Exiting. (hint: set jimmy.token in config.toml)")
     sys.exit(1)
+
 bot.run(CONFIG["jimmy"]["token"])
