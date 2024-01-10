@@ -244,9 +244,9 @@ class Ollama(commands.Cog):
 
             params = {}
             if give_acid is True:
-                params["temperature"] = 5
+                params["temperature"] = 500
                 params["top_k"] = 500
-                params["top_p"] = 5
+                params["top_p"] = 500
 
             payload = {
                 "model": model,
