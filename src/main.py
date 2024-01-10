@@ -53,11 +53,11 @@ class Client(commands.Bot):
             host=CONFIG["server"].get("host", "0.0.0.0"),
             port=CONFIG["server"].get("port", 8080),
             loop="asyncio",
-            lifespan="off",
+            lifespan="on",
             server_header=False
         )
         server = uvicorn.Server(config=config)
-        self.web= self.loop.create_task(server.serve())
+        self.web = self.loop.create_task(asyncio.to_thread(server.serve()))
         await super().start(token, reconnect=reconnect)
 
     async def close(self) -> None:
