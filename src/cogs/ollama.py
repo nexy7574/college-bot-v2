@@ -200,6 +200,11 @@ class Ollama(commands.Cog):
                 color=discord.Color.blurple(),
                 timestamp=discord.utils.utcnow()
             )
+            embed.set_author(
+                name=model,
+                url="https://ollama.ai/library/" + model.split(":")[0],
+                icon_url="https://ollama.ai/public/ollama.png"
+            )
             embed.add_field(
                 name="Prompt",
                 value=">>> " + textwrap.shorten(query, width=1020, placeholder="..."),
