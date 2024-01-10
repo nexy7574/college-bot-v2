@@ -126,7 +126,7 @@ async def delete_message(ctx: discord.ApplicationContext, message: discord.Messa
             return await ctx.respond("I don't have permission to delete messages in this channel.", delete_after=30)
 
     log.info(
-        "%s deleted message %s>%s: %r", ctx.author, ctx.channel.name, ctx.message.id, message.content
+        "%s deleted message %s>%s: %r", ctx.author, ctx.channel.name, message.id, message.content
     )
     await message.delete(delay=3)
     await ctx.respond(f"\N{white heavy check mark} Deleted message by {message.author.display_name}.")
