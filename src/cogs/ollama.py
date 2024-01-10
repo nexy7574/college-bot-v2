@@ -266,6 +266,11 @@ class Ollama(commands.Cog):
                 inline=False
             )
             embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
+            if image_data:
+                if (image.height / image.width) >= 1.5:
+                    embed.set_image(url=image.url)
+                else:
+                    embed.set_thumbnail(url=image.url)
             view = OllamaView(ctx)
             try:
                 await ctx.edit(embed=embed, view=view)
