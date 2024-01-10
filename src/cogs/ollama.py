@@ -7,7 +7,6 @@ import time
 import typing
 import io
 
-from discord import
 from discord.ui import View, button
 from fnmatch import fnmatch
 
