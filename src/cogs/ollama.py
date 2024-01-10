@@ -259,9 +259,9 @@ class Ollama(commands.Cog):
                     else:
                         embeds.append(discord.Embed(description=current_page))
                     
-                    await ctx.edit(embeds=embeds)
+                    await ctx.edit(embeds=embeds, view=None)
                 else:
-                    await ctx.edit(embed=embed)
+                    await ctx.edit(embed=embed, view=None)
 
 def setup(bot):
     bot.add_cog(Ollama(bot))
