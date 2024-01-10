@@ -106,7 +106,7 @@ class Ollama(commands.Cog):
 
         async with aiohttp.ClientSession(
                 base_url=server_config["base_url"],
-                timeout=None
+                timeout=aiohttp.ClientTimeout(0)
         ) as session:
             embed = discord.Embed(
                 title="Checking server...",
