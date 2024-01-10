@@ -6,6 +6,8 @@ import textwrap
 import time
 import typing
 import io
+
+from discord import
 from discord.ui import View, button
 from fnmatch import fnmatch
 
@@ -20,6 +22,9 @@ class OllamaView(View):
         super().__init__(timeout=3600, disable_on_timeout=True)
         self.ctx = ctx
         self.cancel = asyncio.Event()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.ctx.user
 
     @button(label="Stop", style=discord.ButtonStyle.danger, emoji="\N{wastebasket}\U0000fe0f")
     async def _stop(self, btn: discord.ui.Button, interaction: discord.Interaction):
