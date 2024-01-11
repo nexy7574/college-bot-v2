@@ -62,6 +62,18 @@ class Ollama(commands.Cog):
                 self.log.debug("Decoded JSON %r -> %r", original_line, line)
             yield line
 
+    async def check_server(self, url: str) -> bool:
+        """Checks that a server is online and responding."""
+        async with aiohttp.ClientSession() as session:
+            self.log.debug("Checking if %r is online.", url)
+            try:
+                async with session.get(url) as resp:
+                    self.log.debug("%r is online.", resp.url.host)
+                    return resp.ok
+            except aiohttp.ClientConnectionError:
+                self.log.warning("%r is offline.", resp.url.host)
+                return False
+
     @commands.slash_command()
     async def ollama(
             self,
@@ -175,7 +187,31 @@ class Ollama(commands.Cog):
                 color=discord.Color.blurple(),
                 timestamp=discord.utils.utcnow()
             )
+            embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
             await ctx.respond(embed=embed)
+            if not await self.check_server(server_config["base_url"]):
+                for i in range(10):
+                    server = self.next_server()
+                    embed = discord.Embed(
+                        title="Server was offline. Trying next server.",
+                        description=f"Trying server {server}...",
+                        color=discord.Color.gold(),
+                        timestamp=discord.utils.utcnow()
+                    )
+                    embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
+                    await ctx.edit(embed=embed)
+                    if await self.check_server(CONFIG["ollama"][server]["base_url"]):
+                        server_config = CONFIG["ollama"][server]
+                        break
+                else:
+                    embed = discord.Embed(
+                        title="All servers are offline.",
+                        description="Please try again later.",
+                        color=discord.Color.red(),
+                        timestamp=discord.utils.utcnow()
+                    )
+                    embed.set_footer(text="Unable to continue.")
+                    return await ctx.edit(embed=embed)
 
             try:
                 self.log.debug("Connecting to %r", server_config["base_url"])
