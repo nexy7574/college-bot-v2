@@ -90,7 +90,7 @@ class Ollama(commands.Cog):
                 discord.Option(
                     str,
                     "The model to use for ollama. Defaults to 'llama2-uncensored:latest'.",
-                    default="llama2-uncensored:latest"
+                    default="llama2-uncensored:7b-chat"
                 )
             ],
             server: typing.Annotated[
@@ -243,6 +243,7 @@ class Ollama(commands.Cog):
 
             if resp.status == 404:
                 self.log.debug("Beginning download of %r", model)
+
                 def progress_bar(_v: float, action: str = None):
                     bar = "\N{large green square}" * round(_v / 10)
                     bar += "\N{white large square}" * (10 - len(bar))
