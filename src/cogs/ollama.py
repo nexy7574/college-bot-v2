@@ -36,6 +36,7 @@ class OllamaView(View):
 
 SERVER_KEYS = list(CONFIG["ollama"].keys())
 
+
 class Ollama(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -71,7 +72,7 @@ class Ollama(commands.Cog):
                     self.log.debug("%r is online.", resp.url.host)
                     return resp.ok
             except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-                self.log.warning("%r is offline.", url)
+                self.log.warning("%r is offline.", url, exc_info=True)
                 return False
 
     @commands.slash_command()
@@ -204,6 +205,7 @@ class Ollama(commands.Cog):
                     )
                     embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
                     await ctx.edit(embed=embed)
+                    await asyncio.sleep(1)
                     if await self.check_server(CONFIG["ollama"][server]["base_url"]):
                         server_config = CONFIG["ollama"][server]
                         break
