@@ -70,7 +70,7 @@ class Ollama(commands.Cog):
                 async with session.get(url + "/api/tags") as resp:
                     self.log.debug("%r is online.", resp.url.host)
                     return resp.ok
-            except aiohttp.ClientConnectionError:
+            except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
                 self.log.warning("%r is offline.", url)
                 return False
 
