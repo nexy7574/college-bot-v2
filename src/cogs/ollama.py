@@ -64,14 +64,14 @@ class Ollama(commands.Cog):
 
     async def check_server(self, url: str) -> bool:
         """Checks that a server is online and responding."""
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(10)) as session:
             self.log.debug("Checking if %r is online.", url)
             try:
-                async with session.get(url) as resp:
+                async with session.get(url + "/api/tags") as resp:
                     self.log.debug("%r is online.", resp.url.host)
                     return resp.ok
             except aiohttp.ClientConnectionError:
-                self.log.warning("%r is offline.", resp.url.host)
+                self.log.warning("%r is offline.", url)
                 return False
 
     @commands.slash_command()
