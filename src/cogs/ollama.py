@@ -276,8 +276,15 @@ class Ollama(commands.Cog):
                         )
                         embed.set_footer(text="Unable to continue.")
                         return await ctx.edit(embed=embed)
-
+                    view = OllamaView(ctx)
                     async for line in self.ollama_stream(response.content):
+                        if view.cancel.is_set():
+                            embed = discord.Embed(
+                                title="Download cancelled.",
+                                colour=discord.Colour.red(),
+                                timestamp=discord.utils.utcnow()
+                            )
+                            return await ctx.edit(embed=embed, view=None)
                         if time.time() >= (last_update + 5.1):
                             if line.get("total") is not None and line.get("completed") is not None:
                                 percent = (line["completed"] / line["total"]) * 100
@@ -285,7 +292,7 @@ class Ollama(commands.Cog):
                                 percent = 50.0
 
                             embed.fields[0].value = progress_bar(percent, line["status"])
-                            await ctx.edit(embed=embed)
+                            await ctx.edit(embed=embed, view=view)
                             last_update = time.time()
             else:
                 self.log.debug("Model %r already exists on server.", model)
