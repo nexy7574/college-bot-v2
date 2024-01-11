@@ -146,9 +146,13 @@ class Ollama(commands.Cog):
 
         if image:
             if fnmatch(model, "llava:*") is False:
-                await ctx.respond("You can only use images with llava.")
-                return
-            elif image.size > 1024 * 1024 * 25:
+                await ctx.respond(
+                    "You can only use images with llava. Switching model to `llava:latest`.",
+                    delete_after=5
+                )
+                model = "llava:latest"
+
+            if image.size > 1024 * 1024 * 25:
                 await ctx.respond("Attachment is too large. Maximum size is 25 MB, for sanity. Try compressing it.")
                 return
             elif not fnmatch(image.content_type, "image/*"):
