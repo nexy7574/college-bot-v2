@@ -510,9 +510,7 @@ class Ollama(commands.Cog):
                     embed = discord.Embed(
                         title="Timings",
                         description=f"Total: {total_duration}\nLoad: {load_duration}\n"
-                                    f"Prompt Eval: {prompt_eval_duration}\nEval: {eval_duration}\n"
-                                    f"Prompt Tokens: {line['prompt_eval_count']:,}\n"
-                                    f"Response Tokens: {line['eval_count']:,}",
+                                    f"Prompt Eval: {prompt_eval_duration}\nEval: {eval_duration}",
                         color=discord.Color.blurple(),
                         timestamp=discord.utils.utcnow()
                     )
