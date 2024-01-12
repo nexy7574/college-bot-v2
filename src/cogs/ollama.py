@@ -121,7 +121,7 @@ class ChatHistory:
         instance = cog.history
         return list(
             filter(
-                lambda v: ctx.value in v, map(
+                lambda v: (ctx.value or v) in v, map(
                     lambda d: list(d.keys()),
                     instance.threads_for(ctx.interaction.user)
                 )
