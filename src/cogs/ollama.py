@@ -596,8 +596,9 @@ class Ollama(commands.Cog):
                     description=page
                 )
             )
+        ephemeral = len(embeds) > 1
         for chunk in discord.utils.as_chunks(iter(embeds or [discord.Embed(title="No Content.")]), 10):
-            await ctx.respond(embeds=chunk, ephemeral=True)
+            await ctx.respond(embeds=chunk, ephemeral=ephemeral)
 
 
 def setup(bot):
