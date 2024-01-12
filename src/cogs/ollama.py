@@ -18,9 +18,6 @@ from discord.ext import commands
 from conf import CONFIG
 
 
-_M = typing.TypeVar("_M", discord.Member, discord.User)
-
-
 def get_time_spent(nanoseconds: int) -> str:
     hours, minutes, seconds = 0, 0, 0
     seconds = nanoseconds / 1e9
@@ -94,7 +91,7 @@ class ChatHistory:
         """
         key = os.urandom(3).hex()
         self._internal[key] = {
-            "member": member,
+            "member": member.id,
             "seed": round(time.time()),
             "messages": []
         }
@@ -124,15 +121,15 @@ class ChatHistory:
         instance = cog.history
         return discord.utils.basic_autocomplete(list(instance.threads_for(ctx.interaction.user).keys()))(ctx)
 
-    def all_threads(self) -> dict[str, dict[str, list[dict[str, str]] | discord.Member | int]]:
+    def all_threads(self) -> dict[str, dict[str, list[dict[str, str]] | int]]:
         """Returns all saved threads."""
         return self._internal.copy()
 
-    def threads_for(self, user: _M) -> dict[str, list[dict[str, str]] | _M | int]:
+    def threads_for(self, user: discord.Member) -> dict[str, list[dict[str, str]] | int]:
         """Returns all saved threads for a specific user"""
         t = self.all_threads()
         for k, v in t.copy().items():
-            if v["member"] != user:
+            if v["member"] != user.id:
                 t.pop(k)
         return t
 
