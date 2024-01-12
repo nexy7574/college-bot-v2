@@ -470,7 +470,7 @@ class Ollama(commands.Cog):
                             self.log.debug(f"Updating message ({last_update} -> {time.time()})")
                             last_update = time.time()
                 view.stop()
-                self.history.add_message(context, "user", user_message["content"], user_message["images"])
+                self.history.add_message(context, "user", user_message["content"], user_message.get("images"))
                 self.history.add_message(context, "assistant", buffer.getvalue())
                 embed.add_field(name="Context Key", value=context, inline=True)
                 self.log.debug("Ollama finished consuming.")
