@@ -589,7 +589,7 @@ class Ollama(commands.Cog):
             ]
     ):
         """Shows the history for a thread."""
-        await ctx.defer(ephemeral=True)
+        # await ctx.defer(ephemeral=True)
         paginator = commands.Paginator("", "", 4000, "\n\n")
 
         thread = self.history.load_thread(thread_id)
