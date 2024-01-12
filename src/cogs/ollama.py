@@ -76,7 +76,7 @@ class ChatHistory:
         key = os.urandom(3).hex()
         self._internal[key] = {
             "member": member,
-            "seed": round(time.time())
+            "seed": round(time.time()),
             "messages": []
         }
         with open("./assets/ollama-prompt.txt") as file:
