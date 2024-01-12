@@ -7,6 +7,7 @@ import time
 import typing
 import base64
 import io
+import humanize
 
 from discord.ui import View, button
 from fnmatch import fnmatch
@@ -132,6 +133,7 @@ class Ollama(commands.Cog):
             if context not in self.contexts:
                 await ctx.respond("Invalid context key.")
                 return
+            return await ctx.respond("Context is currently disabled.", ephemeral=True)
         with open("./assets/ollama-prompt.txt") as file:
             system_prompt = file.read()
         await ctx.defer()
@@ -404,6 +406,24 @@ class Ollama(commands.Cog):
                     await ctx.edit(embeds=embeds, view=None)
                 else:
                     await ctx.edit(embed=embed, view=None)
+
+                if line.get("done"):
+                    total_duration = humanize.naturaldelta(line["total_duration"] / 1e9)
+                    load_duration = humanize.naturaldelta(line["load_duration"] / 1e9)
+                    prompt_eval_duration = humanize.naturaldelta(line["prompt_eval_duration"] / 1e9)
+                    eval_duration = humanize.naturaldelta(line["eval_duration"] / 1e9)
+
+                    embed = discord.Embed(
+                        title="Timings",
+                        description=f"Total: {total_duration}\nLoad: {load_duration}\n"
+                                    f"Prompt Eval: {prompt_eval_duration}\nEval: {eval_duration}\n"
+                                    f"Prompt Tokens: {line['prompt_eval_count']:,}\n"
+                                    f"Response Tokens: {line['eval_count']:,}",
+                        color=discord.Color.blurple(),
+                        timestamp=discord.utils.utcnow()
+                    )
+                    return await ctx.respond(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(Ollama(bot))
