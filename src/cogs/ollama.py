@@ -456,11 +456,11 @@ class Ollama(commands.Cog):
                 buffer = io.StringIO()
                 if not view.cancel.is_set():
                     async for line in self.ollama_stream(response.content):
-                        buffer.write(line["assistant"])
-                        embed.description += line["assistant"]
+                        buffer.write(line["message"]["content"])
+                        embed.description += line["message"]["content"]
                         embed.timestamp = discord.utils.utcnow()
                         if len(embed.description) >= 4096:
-                            embed.description = embed.description = "..." + line["assistant"]
+                            embed.description = embed.description = "..." + line["message"]["content"]
 
                         if view.cancel.is_set():
                             break
