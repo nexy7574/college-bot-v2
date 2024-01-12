@@ -71,7 +71,10 @@ class OllamaView(View):
 class ChatHistory:
     def __init__(self):
         self._internal = {}
+        no_ping = CONFIG["redis"].pop("no_ping", False)
         self.redis = redis.Redis(**CONFIG["redis"])
+        if no_ping is False:
+            assert self.redis.ping(), "Redis appears to be offline."
 
     def load_thread(self, thread_id: str):
         value: str = self.redis.get("threads:" + thread_id)
