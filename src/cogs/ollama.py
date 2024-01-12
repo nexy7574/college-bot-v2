@@ -76,6 +76,7 @@ class ChatHistory:
         key = os.urandom(3).hex()
         self._internal[key] = {
             "member": member,
+            "seed": round(time.time())
             "messages": []
         }
         with open("./assets/ollama-prompt.txt") as file:
@@ -120,6 +121,10 @@ class ChatHistory:
         Gets the history of a thread.
         """
         return self._internal[thread]["messages"].copy()  # copy() makes it immutable.
+
+    def get_thread(self, thread: str) -> dict[str, list[dict[str, str]] | discord.Member | int]:
+        """Gets a copy of an entire thread"""
+        return self._internal[thread].copy()
 
 
 SERVER_KEYS = list(CONFIG["ollama"].keys())
@@ -415,11 +420,6 @@ class Ollama(commands.Cog):
                 await ctx.respond(embed=embed, view=view)
             self.log.debug("Beginning to generate response with key %r.", key)
 
-            params = {}
-            if give_acid is True:
-                params["temperature"] = 500
-                params["top_k"] = 500
-                params["top_p"] = 500
 
             if context is None or context in self.contexts:
                 context = self.history.create_thread(ctx.user)
@@ -431,6 +431,13 @@ class Ollama(commands.Cog):
             if image_data:
                 user_message["images"] = [image_data]
             messages.append(user_message)
+
+            params = {"seed": self.history.get_thread(context)["seed"]}
+            if give_acid is True:
+                params["temperature"] = 500
+                params["top_k"] = 500
+                params["top_p"] = 500
+
             payload = {
                 "model": model,
                 "stream": True,
