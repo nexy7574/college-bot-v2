@@ -124,7 +124,7 @@ class ChatHistory:
 
     def get_thread(self, thread: str) -> dict[str, list[dict[str, str]] | discord.Member | int]:
         """Gets a copy of an entire thread"""
-        return self._internal[thread].copy()
+        return self._internal.get(thread, {}).copy()
 
 
 SERVER_KEYS = list(CONFIG["ollama"].keys())
@@ -223,7 +223,7 @@ class Ollama(commands.Cog):
             ]
     ):
         if context is not None:
-            if context not in self.contexts:
+            if not self.history.get_thread(context):
                 await ctx.respond("Invalid context key.")
                 return
         await ctx.defer()
