@@ -18,6 +18,36 @@ from discord.ext import commands
 from conf import CONFIG
 
 
+def get_time_spent(nanoseconds: int) -> str:
+    hours, minutes, seconds = 0, 0, 0
+    seconds = nanoseconds / 1e9
+    if seconds >= 60:
+        minutes, seconds = divmod(seconds, 60)
+    if minutes >= 60:
+        hours, minutes = divmod(minutes, 60)
+
+    result = []
+    if seconds:
+        if seconds != 1:
+            label = "seconds"
+        else:
+            label = "second"
+        result.append(f"{round(seconds)} {label}")
+    if minutes:
+        if minutes != 1:
+            label = "minutes"
+        else:
+            label = "minute"
+        result.append(f"{round(minutes)} {label}")
+    if hours:
+        if hours != 1:
+            label = "hours"
+        else:
+            label = "hour"
+        result.append(f"{round(hours)} {label}")
+    return ", ".join(reversed(result))
+
+
 class OllamaView(View):
     def __init__(self, ctx: discord.ApplicationContext):
         super().__init__(timeout=3600, disable_on_timeout=True)
@@ -388,7 +418,7 @@ class Ollama(commands.Cog):
                     embed.add_field(name="Context Key", value=key, inline=True)
                 self.log.debug("Ollama finished consuming.")
                 embed.title = "Done!"
-                embed.color = discord.Color.green()
+                embed.colour = discord.Color.green()
 
                 value = buffer.getvalue()
                 if len(value) >= 4096:
@@ -408,10 +438,10 @@ class Ollama(commands.Cog):
                     await ctx.edit(embed=embed, view=None)
 
                 if line.get("done"):
-                    total_duration = humanize.naturaldelta(line["total_duration"] / 1e9)
-                    load_duration = humanize.naturaldelta(line["load_duration"] / 1e9)
-                    prompt_eval_duration = humanize.naturaldelta(line["prompt_eval_duration"] / 1e9)
-                    eval_duration = humanize.naturaldelta(line["eval_duration"] / 1e9)
+                    total_duration = get_time_spent(line["total_duration"])
+                    load_duration = get_time_spent(line["load_duration"])
+                    prompt_eval_duration = get_time_spent(line["prompt_eval_duration"])
+                    eval_duration = get_time_spent(line["eval_duration"])
 
                     embed = discord.Embed(
                         title="Timings",
