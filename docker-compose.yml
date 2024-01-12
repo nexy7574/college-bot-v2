@@ -11,6 +11,8 @@ services:
       - jimmy-data:/app/data
     ports:
       - 11444:8080
+    extra_hosts:
+      - host.docker.internal:host-gateway
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
@@ -19,6 +21,8 @@ services:
       - 11434:11434
     volumes:
       - ollama-data:/root/.ollama
+  redis:
+    image: redis
 
 volumes:
   ollama-data:

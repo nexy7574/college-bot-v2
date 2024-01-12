@@ -15,6 +15,14 @@ try:
             "channel": 1032974266527907901
         }
     )
+    CONFIG.setdefault(
+        "redis",
+        {
+            "host": "redis",
+            "port": 6379,
+            "decode_responses": True
+        }
+    )
 except FileNotFoundError:
     cwd = Path.cwd()
     logging.getLogger("jimmy.autoconf").critical("Unable to locate config.toml in %s.", cwd, exc_info=True)
