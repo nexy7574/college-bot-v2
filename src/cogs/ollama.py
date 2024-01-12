@@ -119,13 +119,20 @@ class ChatHistory:
         # noinspection PyTypeChecker
         cog: Ollama = ctx.bot.get_cog("Ollama")
         instance = cog.history
-        return discord.utils.basic_autocomplete(list(instance.threads_for(ctx.interaction.user).keys()))(ctx)
+        return list(
+            filter(
+                lambda v: ctx.value in v, map(
+                    lambda d: list(d.keys()),
+                    instance.threads_for(ctx.interaction.user)
+                )
+            )
+        )
 
     def all_threads(self) -> dict[str, dict[str, list[dict[str, str]] | int]]:
         """Returns all saved threads."""
         return self._internal.copy()
 
-    def threads_for(self, user: discord.Member) -> dict[str, list[dict[str, str]] | int]:
+    def threads_for(self, user: discord.Member) -> dict[str, dict[str, list[dict[str, str]] | int]]:
         """Returns all saved threads for a specific user"""
         t = self.all_threads()
         for k, v in t.copy().items():
