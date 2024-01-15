@@ -22,13 +22,13 @@ class ScreenshotCog(commands.Cog):
         self.log = logging.getLogger("jimmy.cogs.screenshot")
 
         self.chrome_options = ChromeOptions()
-        # self.chrome_options.add_argument("--headless")
-        # self.chrome_options.add_argument("--disable-extensions")
+        self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_argument("--disable-extensions")
         self.chrome_options.add_argument("--incognito")
         self.chrome_options.add_argument("--remote-debugging-port=9222")
         if os.getuid() == 0:
             self.chrome_options.add_argument("--no-sandbox")
-            # self.chrome_options.add_argument("--disable-setuid-sandbox")
+            self.chrome_options.add_argument("--disable-setuid-sandbox")
             self.log.warning("Running as root, disabling chrome sandbox.")
 
         prefs = {
@@ -38,9 +38,9 @@ class ScreenshotCog(commands.Cog):
             "plugins.always_open_pdf_externally": False,
             "download_restrictions": 3,
         }
-        # self.chrome_options.add_experimental_option(
-        #     "prefs", prefs
-        # )
+        self.chrome_options.add_experimental_option(
+            "prefs", prefs
+        )
 
     def compress_png(self, input_file: io.BytesIO) -> io.BytesIO:
         img = Image.open(input_file)
