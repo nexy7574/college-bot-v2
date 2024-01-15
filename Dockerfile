@@ -69,6 +69,5 @@ COPY requirements.txt /tmp/requirements.txt
 RUN /app/venv/bin/pip install -Ur /tmp/requirements.txt --no-input
 
 COPY ./src/ /app/
-COPY ./src/cogs/ /app/cogs/
 
 CMD ["/app/venv/bin/python", "main.py"]
