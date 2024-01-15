@@ -1,6 +1,8 @@
 # FROM python:3.11-bookworm
 FROM ubuntu:latest
 
+WORKDIR /app
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -21,15 +23,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     htop \
     python3 \
     python3-pip \
-    python3-dev
+    python3-dev \
+    python3-virtualenv
 
-RUN pip install --upgrade --break-system-packages pip wheel setuptools
+RUN virtualenv /app/venv
+RUN /app/venv/bin/pip install --upgrade --no-input pip wheel setuptools
 
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install -Ur /tmp/requirements.txt --break-system-packages --no-input
+RUN /app/venv/bin/pip install -Ur /tmp/requirements.txt --no-input
 
-WORKDIR /app
 COPY ./src/ /app/
 COPY ./src/cogs/ /app/cogs/
 
-CMD ["python", "main.py"]
+CMD ["/app/venv/bin/python", "main.py"]
