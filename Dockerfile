@@ -8,10 +8,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     dnsutils \
     net-tools \
     git \
-    chromium \
-    chromium-driver \
-    chromium-sandbox \
-    chromium-shell \
+    # chromium \
+    # chromium-driver \
+    # chromium-sandbox \
+    # chromium-shell \
     ffmpeg \
     imagemagick \
     whois \
