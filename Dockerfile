@@ -1,4 +1,5 @@
-FROM python:3.11-bookworm
+# FROM python:3.11-bookworm
+FROM ubuntu:latest
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
@@ -17,7 +18,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     whois \
     wget \
     curl \
-    htop
+    htop \
+    python3 \
+    python3-pip \
+    python3-dev
 
 RUN pip install --upgrade --break-system-packages pip wheel setuptools
 
