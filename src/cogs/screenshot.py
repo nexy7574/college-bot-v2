@@ -127,11 +127,13 @@ class ScreenshotCog(commands.Cog):
         try:
             await asyncio.to_thread(driver.get, url)
         except selenium.common.WebDriverException as e:
+            await self.bot.loop.run_in_executor(None, driver.quit)
             if "TimeoutException" in str(e):
                 return await ctx.respond("Timed out while loading webpage.")
             else:
                 return await ctx.respond("Failed to load webpage:\n```\n%s\n```" % str(e.msg))
         except Exception as e:
+            await self.bot.loop.run_in_executor(None, driver.quit)
             await ctx.respond("Failed to get the webpage: " + str(e))
             raise
         end_request = time.time()
@@ -165,8 +167,7 @@ class ScreenshotCog(commands.Cog):
 
         await ctx.edit(content="Cleaning up...")
         start_cleanup = time.time()
-        await asyncio.to_thread(driver.close)
-        await asyncio.to_thread(driver.quit)
+        await self.bot.loop.run_in_executor(None, driver.quit)
         end_cleanup = time.time()
 
         screenshot_size_mb = round(len(await asyncio.to_thread(file.getvalue)) / 1024 / 1024, 2)

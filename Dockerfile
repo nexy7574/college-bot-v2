@@ -45,7 +45,7 @@ libnss3 \
 lsb-release \
 xdg-utils 
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     traceroute \
     iputils-ping \
     dnsutils \
