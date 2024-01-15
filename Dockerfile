@@ -11,10 +11,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     dnsutils \
     net-tools \
     git \
-    # chromium \
-    # chromium-driver \
-    # chromium-sandbox \
-    # chromium-shell \
     ffmpeg \
     imagemagick \
     whois \
@@ -24,7 +20,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     python3 \
     python3-pip \
     python3-dev \
-    python3-virtualenv
+    python3-virtualenv \
+    # libglib2.0-0=2.50.3-2 \
+    # libnss3=2:3.26.2-1.1+deb9u1 \
+    # libgconf-2-4=3.2.6-4+b1 \
+    # libfontconfig1=2.11.0-6.7+b1
+    libglib2.0-0 \
+    libnss3 \
+    libgconf-2-4 \
+    libfontconfig1
 
 RUN virtualenv /app/venv
 RUN /app/venv/bin/pip install --upgrade --no-input pip wheel setuptools
