@@ -25,8 +25,10 @@ class ScreenshotCog(commands.Cog):
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument("--disable-extensions")
         self.chrome_options.add_argument("--incognito")
+        self.chrome_options.add_argument("--remote-debugging-port=9222")
         if os.getuid() == 0:
             self.chrome_options.add_argument("--no-sandbox")
+            self.chrome_options.add_argument("--disable-setuid-sandbox")
             self.log.warning("Running as root, disabling chrome sandbox.")
 
         prefs = {
