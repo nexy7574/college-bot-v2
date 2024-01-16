@@ -359,6 +359,7 @@ class Ollama(commands.Cog):
                     await asyncio.sleep(1)
                     if await self.check_server(CONFIG["ollama"][server]["base_url"]):
                         server_config = CONFIG["ollama"][server]
+                        setattr(session, "_base_url", server_config["base_url"])
                         break
                 else:
                     embed = discord.Embed(
