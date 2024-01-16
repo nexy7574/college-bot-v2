@@ -13,6 +13,7 @@ from discord.ui import View, button
 from fnmatch import fnmatch
 
 import aiohttp
+from yarl import URL
 import discord
 from discord.ext import commands
 from conf import CONFIG
@@ -359,7 +360,7 @@ class Ollama(commands.Cog):
                     await asyncio.sleep(1)
                     if await self.check_server(CONFIG["ollama"][server]["base_url"]):
                         server_config = CONFIG["ollama"][server]
-                        setattr(session, "_base_url", server_config["base_url"])
+                        setattr(session, "_base_url", URL(server_config["base_url"]))
                         break
                 else:
                     embed = discord.Embed(
