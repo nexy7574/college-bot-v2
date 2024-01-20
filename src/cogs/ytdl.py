@@ -156,7 +156,6 @@ class YTDLCog(commands.Cog):
                 self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
 
-
     @commands.slash_command(name="yt-dl")
     @commands.max_concurrency(1, wait=False)
     # @commands.bot_has_permissions(send_messages=True, embed_links=True, attach_files=True)
@@ -261,6 +260,7 @@ class YTDLCog(commands.Cog):
                     title = "error"
                     description = str(e)
                     thumbnail_url = webpage_url = None
+                    likes = views = 0
                 else:
                     title = extracted_info.get("title", url)
                     title = textwrap.shorten(title, 100)
@@ -276,6 +276,8 @@ class YTDLCog(commands.Cog):
                     vcodec = extracted_info.get("vcodec")
                     acodec = extracted_info.get("acodec")
                     filesize = extracted_info.get("filesize", extracted_info.get("filesize_approx", 1))
+                    likes = extracted_info.get("like_count", extracted_info.get("average_rating", 0))
+                    views = extracted_info.get("view_count", 0)
 
                     lines = []
                     if chosen_format and chosen_format_id:
@@ -439,6 +441,7 @@ class YTDLCog(commands.Cog):
                         file=upload_file,
                         embed=discord.Embed(
                             title=f"Downloaded {title}!",
+                            description="Views: {:,} | Likes: {:,}".format(views, likes),
                             colour=discord.Colour.green(),
                             timestamp=discord.utils.utcnow(),
                             url=webpage_url
