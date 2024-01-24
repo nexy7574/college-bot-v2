@@ -155,6 +155,36 @@ class YTDLCog(commands.Cog):
             except IndexError:
                 self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
+    
+    def convert_to_m4a(self, file: Path) -> Path:
+        """
+        Converts a file to m4a format.
+        :param file: The file to convert
+        :return: The converted file
+        """
+        new_file = file.with_suffix(".m4a")
+        args = [
+            "-vn",
+            "-sn",
+            "-i",
+            str(file),
+            "-c:a",
+            "aac",
+            "-b:a",
+            "64k",
+            "-movflags",
+            "faststart",
+            "-y",
+            str(new_file)
+        ]
+        process = subprocess.run(
+            ["ffmpeg", *args],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr.decode())
+        return new_file
 
     @commands.slash_command(name="yt-dl")
     @commands.max_concurrency(1, wait=False)
@@ -428,6 +458,10 @@ class YTDLCog(commands.Cog):
                                 )
                             )
                         file = new_file
+                
+                if audio_only and file.suffix  != ".m4a":
+                    self.log.info("Converting %r to m4a.", file)
+                    file = await asyncio.to_thread(self.convert_to_m4a, file)
 
                 stat = file.stat()
                 size_bytes = stat.st_size
