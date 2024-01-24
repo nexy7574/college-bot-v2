@@ -341,8 +341,23 @@ class YTDLCog(commands.Cog):
                         delete_after=120,
                     )
                 try:
-                    file = next(temp_dir.glob("*." + extracted_info["ext"]))
+                    if audio_only is False:
+                        file = next(temp_dir.glob("*." + extracted_info["ext"]))
+                    else:
+                        # can be .opus, .m4a, .mp3, .ogg, .oga
+                        for _file in temp_dir.iterdir():
+                            if _file.suffix in (".opus", ".m4a", ".mp3", ".ogg", ".oga", ".aac", ".wav"):
+                                file = _file
+                                break
+                        else:
+                            raise StopIteration
                 except StopIteration:
+                    self.log.warning(
+                        "Failed to locate downloaded file. Was supposed to be looking for a file extension of "
+                        "%r amongst files %r, however none were found.",
+                        extracted_info["ext"],
+                        list(map(str, temp_dir.iterdir()))
+                    )
                     return await ctx.edit(
                         embed=discord.Embed(
                             title="Error",
@@ -381,7 +396,7 @@ class YTDLCog(commands.Cog):
                         "-movflags",
                         "faststart",
                         "-b:a",
-                        "48k",
+                        "64k",
                         "-y",
                         "-strict",
                         "2",
