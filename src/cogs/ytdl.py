@@ -4,6 +4,7 @@ import hashlib
 import logging
 import tempfile
 import textwrap
+import subprocess
 import typing
 from pathlib import Path
 from urllib.parse import urlparse
