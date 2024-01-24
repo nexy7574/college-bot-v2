@@ -106,6 +106,10 @@ class YTDLCog(commands.Cog):
                 """
                 INSERT INTO downloads (key, message_id, channel_id, webpage_url, format_id, attachment_index)
                 VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT (key) DO UPDATE SET
+                    message_id=excluded.message_id,
+                    channel_id=excluded.channel_id,
+                    attachment_index=excluded.attachment_index
                 """,
                 (_hash, message.id, message.channel.id, webpage_url, format_id, attachment_index)
             )
