@@ -182,6 +182,7 @@ class YTDLCog(commands.Cog):
             "-y",
             str(new_file)
         ]
+        self.log.debug("Running command: ffmpeg %s", " ".join(args))
         process = subprocess.run(
             ["ffmpeg", *args],
             stdout=subprocess.PIPE,
@@ -446,6 +447,7 @@ class YTDLCog(commands.Cog):
                                 timestamp=discord.utils.utcnow()
                             )
                         )
+                        self.log.debug("Running command: ffmpeg %s", " ".join(args))
                         process = await asyncio.create_subprocess_exec(
                             "ffmpeg",
                             *args,
