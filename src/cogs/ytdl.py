@@ -56,7 +56,7 @@ class YTDLCog(commands.Cog):
             "merge_output_format": "webm/mp4/mov/m4a/oga/ogg/mp3/mka/mkv",
             "source_address": "0.0.0.0",
             "concurrent_fragment_downloads": 4,
-            "max_filesize": (25 * 1024 * 1024) - 256
+            # "max_filesize": (25 * 1024 * 1024) - 256
         }
         self.colours = {
             "youtube.com": 0xff0000,
