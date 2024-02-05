@@ -501,9 +501,10 @@ class Ollama(commands.Cog):
 
             params = {"seed": self.history.get_thread(context)["seed"]}
             if give_acid is True:
-                params["temperature"] = 500
-                params["top_k"] = 500
-                params["top_p"] = 500
+                params["temperature"] = 2
+                params["top_k"] = 0
+                params["top_p"] = 2
+                params["repeat_penalty"] = 2
 
             payload = {
                 "model": model,
