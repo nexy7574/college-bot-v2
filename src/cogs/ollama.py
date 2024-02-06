@@ -501,9 +501,10 @@ class Ollama(commands.Cog):
 
             params = {"seed": self.history.get_thread(context)["seed"]}
             if give_acid is True:
-                params["temperature"] = 500
-                params["top_k"] = 500
-                params["top_p"] = 500
+                params["temperature"] = 2
+                params["top_k"] = 0
+                params["top_p"] = 2
+                params["repeat_penalty"] = 2
 
             payload = {
                 "model": model,
@@ -533,8 +534,14 @@ class Ollama(commands.Cog):
                         buffer.write(line["message"]["content"])
                         embed.description += line["message"]["content"]
                         embed.timestamp = discord.utils.utcnow()
-                        if len(embed.description) >= 4096:
-                            embed.description = embed.description = "..." + line["message"]["content"]
+                        if len(embed.description) >= 4000:
+                            embed.description = "[...]" + line["message"]["content"]
+                        if len(embed.description) >= 3250:
+                            embed.colour = discord.Color.gold()
+                            embed.set_footer(text="Warning: {:,}/4096 characters.".format(len(embed.description)))
+                        else:
+                            embed.colour = discord.Color.blurple()
+                            embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
 
                         if view.cancel.is_set():
                             break

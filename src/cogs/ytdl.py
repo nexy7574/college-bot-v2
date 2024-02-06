@@ -4,6 +4,7 @@ import hashlib
 import logging
 import tempfile
 import textwrap
+import subprocess
 import typing
 from pathlib import Path
 from urllib.parse import urlparse
@@ -55,7 +56,7 @@ class YTDLCog(commands.Cog):
             "merge_output_format": "webm/mp4/mov/m4a/oga/ogg/mp3/mka/mkv",
             "source_address": "0.0.0.0",
             "concurrent_fragment_downloads": 4,
-            "max_filesize": (25 * 1024 * 1024) - 256
+            # "max_filesize": (25 * 1024 * 1024) - 256
         }
         self.colours = {
             "youtube.com": 0xff0000,
@@ -106,6 +107,10 @@ class YTDLCog(commands.Cog):
                 """
                 INSERT INTO downloads (key, message_id, channel_id, webpage_url, format_id, attachment_index)
                 VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT (key) DO UPDATE SET
+                    message_id=excluded.message_id,
+                    channel_id=excluded.channel_id,
+                    attachment_index=excluded.attachment_index
                 """,
                 (_hash, message.id, message.channel.id, webpage_url, format_id, attachment_index)
             )
@@ -155,6 +160,37 @@ class YTDLCog(commands.Cog):
             except IndexError:
                 self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
+    
+    def convert_to_m4a(self, file: Path) -> Path:
+        """
+        Converts a file to m4a format.
+        :param file: The file to convert
+        :return: The converted file
+        """
+        new_file = file.with_suffix(".m4a")
+        args = [
+            "-vn",
+            "-sn",
+            "-i",
+            str(file),
+            "-c:a",
+            "aac",
+            "-b:a",
+            "96k",
+            "-movflags",
+            "faststart",
+            "-y",
+            str(new_file)
+        ]
+        self.log.debug("Running command: ffmpeg %s", " ".join(args))
+        process = subprocess.run(
+            ["ffmpeg", *args],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr.decode())
+        return new_file
 
     @commands.slash_command(name="yt-dl")
     @commands.max_concurrency(1, wait=False)
@@ -341,8 +377,23 @@ class YTDLCog(commands.Cog):
                         delete_after=120,
                     )
                 try:
-                    file = next(temp_dir.glob("*." + extracted_info["ext"]))
+                    if audio_only is False:
+                        file = next(temp_dir.glob("*." + extracted_info["ext"]))
+                    else:
+                        # can be .opus, .m4a, .mp3, .ogg, .oga
+                        for _file in temp_dir.iterdir():
+                            if _file.suffix in (".opus", ".m4a", ".mp3", ".ogg", ".oga", ".aac", ".wav"):
+                                file = _file
+                                break
+                        else:
+                            raise StopIteration
                 except StopIteration:
+                    self.log.warning(
+                        "Failed to locate downloaded file. Was supposed to be looking for a file extension of "
+                        "%r amongst files %r, however none were found.",
+                        extracted_info["ext"],
+                        list(map(str, temp_dir.iterdir()))
+                    )
                     return await ctx.edit(
                         embed=discord.Embed(
                             title="Error",
@@ -381,7 +432,7 @@ class YTDLCog(commands.Cog):
                         "-movflags",
                         "faststart",
                         "-b:a",
-                        "48k",
+                        "96k",
                         "-y",
                         "-strict",
                         "2",
@@ -396,6 +447,7 @@ class YTDLCog(commands.Cog):
                                 timestamp=discord.utils.utcnow()
                             )
                         )
+                        self.log.debug("Running command: ffmpeg %s", " ".join(args))
                         process = await asyncio.create_subprocess_exec(
                             "ffmpeg",
                             *args,
@@ -413,6 +465,10 @@ class YTDLCog(commands.Cog):
                                 )
                             )
                         file = new_file
+                
+                if audio_only and file.suffix  != ".m4a":
+                    self.log.info("Converting %r to m4a.", file)
+                    file = await asyncio.to_thread(self.convert_to_m4a, file)
 
                 stat = file.stat()
                 size_bytes = stat.st_size
