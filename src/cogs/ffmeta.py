@@ -27,9 +27,10 @@ class FFMeta(commands.Cog):
             url,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            text=True
         )
         stdout, stderr = await process.communicate()
+        stdout = stdout.decode("utf-8", "replace")
+        stderr = stderr.decode("utf-8", "replace")
 
         paginator = commands.Paginator(prefix="```", suffix="```")
         for line in stdout:
