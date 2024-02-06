@@ -534,8 +534,14 @@ class Ollama(commands.Cog):
                         buffer.write(line["message"]["content"])
                         embed.description += line["message"]["content"]
                         embed.timestamp = discord.utils.utcnow()
-                        if len(embed.description) >= 4096:
-                            embed.description = embed.description = "..." + line["message"]["content"]
+                        if len(embed.description) >= 4000:
+                            embed.description = "[...]" + line["message"]["content"]
+                        if len(embed.description) >= 3250:
+                            embed.colour = discord.Color.gold()
+                            embed.set_footer(text="Warning: {:,}/4096 characters.".format(len(embed.description)))
+                        else:
+                            embed.colour = discord.Color.blurple()
+                            embed.set_footer(text="Using server %r" % server, icon_url=server_config.get("icon_url"))
 
                         if view.cancel.is_set():
                             break
