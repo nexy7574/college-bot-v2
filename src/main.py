@@ -65,6 +65,7 @@ class Client(commands.Bot):
             self.web.cancel()
         await super().close()
 
+
 bot = Client(
     command_prefix=commands.when_mentioned_or("h!", "H!"),
     case_insensitive=True,
@@ -72,10 +73,13 @@ bot = Client(
     debug_guilds=CONFIG["jimmy"].get("debug_guilds")
 )
 
-bot.load_extension("cogs.ytdl")
-bot.load_extension("cogs.net")
-bot.load_extension("cogs.screenshot")
-bot.load_extension("cogs.ollama")
+for ext in ("ytdl", "net", "screenshot", "ollama", "ffmeta"):
+    try:
+        bot.load_extension(f"cogs.{ext}")
+    except discord.ExtensionError as e:
+        log.error(f"Failed to load extension cogs.{ext}", exc_info=e)
+    else:
+        log.info(f"Loaded extension cogs.{ext}")
 
 
 @bot.event
