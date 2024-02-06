@@ -33,13 +33,13 @@ class FFMeta(commands.Cog):
         stderr = stderr.decode("utf-8", "replace")
 
         paginator = commands.Paginator(prefix="```", suffix="```")
-        for line in stdout:
+        for line in stdout.splitlines():
             if stderr:
                 paginator.add_line(f"[OUT] {line}"[:2000])
             else:
                 paginator.add_line(line[:2000])
 
-        for line in stderr:
+        for line in stderr.splitlines():
             paginator.add_line(f"[ERR] {line}"[:2000])
 
         for page in paginator.pages:
