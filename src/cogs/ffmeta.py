@@ -80,7 +80,7 @@ class FFMeta(commands.Cog):
                 discord.Option(
                     str,
                     description="The format of the resulting image",
-                    choices=["jpeg", "png", "webp", "avif"],
+                    choices=["jpeg", "webp"],
                     default="jpeg"
                 )
             ] = "jpeg"
