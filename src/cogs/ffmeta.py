@@ -149,7 +149,9 @@ class FFMeta(commands.Cog):
         channels = 2 if not mono else 1
         with tempfile.NamedTemporaryFile() as temp:
             async with httpx.AsyncClient(
-                headers={"User-Agent": f"DiscordBot (Jimmy, v2, {VERSION}, +https://github.com/nexy7574/college-bot-v2)"}
+                headers={
+                    "User-Agent": f"DiscordBot (Jimmy, v2, {VERSION}, +https://github.com/nexy7574/college-bot-v2)"
+                }
             ) as client:
                 response = await client.get(url)
                 if response.status_code != 200:
@@ -186,6 +188,9 @@ class FFMeta(commands.Cog):
             process = await asyncio.create_subprocess_exec(
                 "ffmpeg",
                 "-hide_banner",
+                "-loglevel",
+                "info",
+                "-stats",
                 "-i",
                 temp.name,
                 "-c:a", "libopus",
@@ -194,6 +199,7 @@ class FFMeta(commands.Cog):
                 "-sn",
                 "-ac", str(channels),
                 "-f", "opus",
+                "-y",
                 "pipe:1",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
@@ -203,6 +209,8 @@ class FFMeta(commands.Cog):
 
         paginator = commands.Paginator(prefix="```", suffix="```")
         for line in stderr.splitlines():
+            if line.strip().startswith(": "):
+                continue
             paginator.add_line(f"{line}"[:2000])
 
         for page in paginator.pages:
