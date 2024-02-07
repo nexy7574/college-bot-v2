@@ -125,11 +125,11 @@ class FFMeta(commands.Cog):
                 discord.Option(
                     int,
                     description="The bitrate in kilobits of the resulting audio from 1-512",
-                    default=64,
+                    default=96,
                     min_value=1,
                     max_value=512
                 )
-            ] = 64,
+            ] = 96,
             mono: typing.Annotated[
                 bool,
                 discord.Option(
@@ -176,7 +176,7 @@ class FFMeta(commands.Cog):
                 except json.JSONDecodeError:
                     pass
 
-            duration = data["format"].get("duration", 195)
+            duration = float(data["format"].get("duration", 195))
             max_end_size = ((bitrate * duration * channels) / 8) * 1024
             if max_end_size > (24.75 * 1024 * 1024):
                 return await ctx.respond(
