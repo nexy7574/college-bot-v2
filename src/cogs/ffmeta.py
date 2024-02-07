@@ -192,7 +192,7 @@ class FFMeta(commands.Cog):
                 "ffmpeg",
                 "-hide_banner",
                 "-loglevel",
-                "info",
+                "warning",
                 "-stats",
                 "-i",
                 temp.name,
@@ -211,11 +211,7 @@ class FFMeta(commands.Cog):
         stderr = stderr.decode("utf-8", "replace")
 
         paginator = commands.Paginator(prefix="```", suffix="```")
-        known_lines = []
         for line in stderr.splitlines():
-            if line.strip() in known_lines:
-                continue
-            known_lines.append(line.strip())
             if line.strip().startswith(":"):
                 continue
             paginator.add_line(f"{line}"[:2000])
