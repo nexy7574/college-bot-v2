@@ -4,6 +4,7 @@ import json
 import logging
 import tempfile
 import typing
+from pathlib import Path
 
 import PIL.Image
 
@@ -140,10 +141,12 @@ class FFMeta(commands.Cog):
             ] = False
     ):
         """Converts a given URL or attachment to an Opus file"""
+        filename = "opusinated.ogg"
         if url is None:
             if attachment is None:
                 return await ctx.respond("No URL or attachment provided")
             url = attachment.url
+            filename = str(Path(attachment.filename).with_suffix(".ogg"))
 
         await ctx.defer()
         channels = 2 if not mono else 1
@@ -219,7 +222,7 @@ class FFMeta(commands.Cog):
         file = io.BytesIO(stdout)
         if (fs := len(file.getvalue())) > (24.75 * 1024 * 1024):
             return await ctx.respond("The file is too large to send ({:,.2f} MiB).".format(fs / 1024 / 1024))
-        await ctx.respond(file=discord.File(file, filename="opusinated.ogg"))
+        await ctx.respond(file=discord.File(file, filename=filename))
 
 
 def setup(bot: commands.Bot):
