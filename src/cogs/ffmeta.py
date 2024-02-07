@@ -212,7 +212,7 @@ class FFMeta(commands.Cog):
 
         paginator = commands.Paginator(prefix="```", suffix="```")
         for line in stderr.splitlines():
-            if line.strip().startswith(": "):
+            if line.strip().startswith(":"):
                 continue
             paginator.add_line(f"{line}"[:2000])
 
