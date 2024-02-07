@@ -1,6 +1,26 @@
 import toml
 import logging
+import subprocess
 from pathlib import Path
+
+log = logging.getLogger("jimmy.autoconf")
+
+if (Path.cwd() / ".git").exists():
+    try:
+        log.debug("Attempting to auto-detect running version using git.")
+        VERSION = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            check=True
+        ).stdout.strip()
+    except subprocess.CalledProcessError:
+        log.debug("Unable to auto-detect running version using git.", exc_info=True)
+        VERSION = "unknown"
+else:
+    log.debug("Unable to auto-detect running version using git, no .git directory exists.")
+    VERSION = "unknown"
 
 try:
     CONFIG = toml.load('config.toml')
@@ -25,5 +45,5 @@ try:
     )
 except FileNotFoundError:
     cwd = Path.cwd()
-    logging.getLogger("jimmy.autoconf").critical("Unable to locate config.toml in %s.", cwd, exc_info=True)
+    log.critical("Unable to locate config.toml in %s.", cwd, exc_info=True)
     raise

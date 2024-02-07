@@ -1,6 +1,8 @@
 import asyncio
 import io
+import json
 import logging
+import tempfile
 import typing
 
 import PIL.Image
@@ -9,6 +11,7 @@ import discord
 import httpx
 
 from discord.ext import commands
+from conf import VERSION
 
 
 class FFMeta(commands.Cog):
@@ -94,7 +97,9 @@ class FFMeta(commands.Cog):
         await ctx.defer()
 
         src = io.BytesIO()
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(
+            headers={"User-Agent": f"DiscordBot (Jimmy, v2, {VERSION}, +https://github.com/nexy7574/college-bot-v2)"}
+        ) as client:
             response = await client.get(url)
             if response.status_code != 200:
                 return
@@ -108,6 +113,105 @@ class FFMeta(commands.Cog):
             return
         else:
             await ctx.respond(file=discord.File(dst, filename=f"jpegified.{image_format}"))
+
+    @commands.slash_command()
+    async def opusinate(
+            self,
+            ctx: discord.ApplicationContext,
+            url: str = None,
+            attachment: discord.Attachment = None,
+            bitrate: typing.Annotated[
+                int,
+                discord.Option(
+                    int,
+                    description="The bitrate in kilobits of the resulting audio from 1-512",
+                    default=64,
+                    min_value=1,
+                    max_value=512
+                )
+            ] = 64,
+            mono: typing.Annotated[
+                bool,
+                discord.Option(
+                    bool,
+                    description="Whether to convert the audio to mono",
+                    default=False
+                )
+            ] = False
+    ):
+        """Converts a given URL or attachment to an Opus file"""
+        if url is None:
+            if attachment is None:
+                return await ctx.respond("No URL or attachment provided")
+            url = attachment.url
+
+        await ctx.defer()
+        channels = 2 if not mono else 1
+        with tempfile.NamedTemporaryFile() as temp:
+            async with httpx.AsyncClient(
+                headers={"User-Agent": f"DiscordBot (Jimmy, v2, {VERSION}, +https://github.com/nexy7574/college-bot-v2)"}
+            ) as client:
+                response = await client.get(url)
+                if response.status_code != 200:
+                    return
+                temp.write(response.content)
+                temp.flush()
+
+            probe_process = await asyncio.create_subprocess_exec(
+                "ffprobe",
+                "-v", "quiet",
+                "-print_format", "json",
+                "-show_format",
+                "-i",
+                temp.name,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await probe_process.communicate()
+            stdout = stdout.decode("utf-8", "replace")
+            data = {"format": {"duration": 195}}  # 3 minutes and 15 seconds is the 2023 average.
+            if stdout:
+                try:
+                    data = json.loads(stdout)
+                except json.JSONDecodeError:
+                    pass
+
+            duration = data["format"].get("duration", 195)
+            max_end_size = ((bitrate * duration * channels) / 8) * 1024
+            if max_end_size > (24.75 * 1024 * 1024):
+                return await ctx.respond(
+                    "The file would be too large to send ({:,.2f} MiB).".format(max_end_size / 1024 / 1024)
+                )
+
+            process = await asyncio.create_subprocess_exec(
+                "ffmpeg",
+                "-hide_banner",
+                "-i",
+                temp.name,
+                "-c:a", "libopus",
+                "-b:a", f"{bitrate}k",
+                "-vn",
+                "-sn",
+                "-ac", str(channels),
+                "-f", "opus",
+                "pipe:1",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
+        stderr = stderr.decode("utf-8", "replace")
+
+        paginator = commands.Paginator(prefix="```", suffix="```")
+        for line in stderr.splitlines():
+            paginator.add_line(f"{line}"[:2000])
+
+        for page in paginator.pages:
+            await ctx.respond(page)
+
+        file = io.BytesIO(stdout)
+        if (fs := len(file.getvalue())) > (24.75 * 1024 * 1024):
+            return await ctx.respond("The file is too large to send ({:,.2f} MiB).".format(fs / 1024 / 1024))
+        await ctx.respond(file=discord.File(file, filename="opusinated.ogg"))
 
 
 def setup(bot: commands.Bot):
