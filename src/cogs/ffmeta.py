@@ -214,6 +214,14 @@ class FFMeta(commands.Cog):
             stdout, stderr = await process.communicate()
         stderr = stderr.decode("utf-8", "replace")
 
+        file = io.BytesIO(stdout)
+        if (fs := len(file.getvalue())) > (24.75 * 1024 * 1024):
+            return await ctx.respond("The file is too large to send ({:,.2f} MiB).".format(fs / 1024 / 1024))
+        if not fs:
+            await ctx.respond("Failed to convert audio. See below.")
+        else:
+            await ctx.respond(file=discord.File(file, filename=filename))
+
         paginator = commands.Paginator(prefix="```", suffix="```")
         for line in stderr.splitlines():
             if line.strip().startswith(":"):
@@ -221,12 +229,7 @@ class FFMeta(commands.Cog):
             paginator.add_line(f"{line}"[:2000])
 
         for page in paginator.pages:
-            await ctx.respond(page)
-
-        file = io.BytesIO(stdout)
-        if (fs := len(file.getvalue())) > (24.75 * 1024 * 1024):
-            return await ctx.respond("The file is too large to send ({:,.2f} MiB).".format(fs / 1024 / 1024))
-        await ctx.respond(file=discord.File(file, filename=filename))
+            await ctx.respond(page, ephemeral=True)
 
 
 def setup(bot: commands.Bot):
