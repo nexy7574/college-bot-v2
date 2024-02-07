@@ -1,6 +1,8 @@
 import asyncio
 import io
 import logging
+import typing
+
 import PIL.Image
 
 import discord
@@ -58,7 +60,31 @@ class FFMeta(commands.Cog):
             await ctx.respond(page)
 
     @commands.slash_command()
-    async def jpegify(self, ctx: discord.ApplicationContext, url: str = None, attachment: discord.Attachment = None):
+    async def jpegify(
+            self,
+            ctx: discord.ApplicationContext,
+            url: str = None,
+            attachment: discord.Attachment = None,
+            quality: typing.Annotated[
+                int,
+                discord.Option(
+                    int,
+                    description="The quality of the resulting image from 1%-100%",
+                    default=50,
+                    min_value=1,
+                    max_value=100
+                )
+            ] = 50,
+            image_format: typing.Annotated[
+                str,
+                discord.Option(
+                    str,
+                    description="The format of the resulting image",
+                    choices=["jpeg", "png", "webp", "avif"],
+                    default="jpeg"
+                )
+            ] = "jpeg"
+    ):
         """Converts a given URL or attachment to a JPEG"""
         if url is None:
             if attachment is None:
@@ -74,18 +100,14 @@ class FFMeta(commands.Cog):
                 return
             src.write(response.content)
 
-        paginator = commands.Paginator(prefix="```", suffix="```")
-        for line in stdout.splitlines():
-            if stderr:
-                paginator.add_line(f"[OUT] {line}"[:2000])
-            else:
-                paginator.add_line(line[:2000])
-
-        for line in stderr.splitlines():
-            paginator.add_line(f"[ERR] {line}"[:2000])
-
-        for page in paginator.pages:
-            await ctx.respond(page)
+        try:
+            dst = await asyncio.to_thread(self.jpegify_image, src, quality, image_format)
+        except Exception as e:
+            await ctx.respond(f"Failed to convert image: `{e}`.")
+            self.log.error("Failed to convert image %r: %r", url, e)
+            return
+        else:
+            await ctx.respond(file=discord.File(dst, filename=f"jpegified.{image_format}"))
 
 
 def setup(bot: commands.Bot):
