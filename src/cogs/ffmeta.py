@@ -127,7 +127,7 @@ class FFMeta(commands.Cog):
                     int,
                     description="The bitrate in kilobits of the resulting audio from 1-512",
                     default=96,
-                    min_value=1,
+                    min_value=0,
                     max_value=512
                 )
             ] = 96,
@@ -141,6 +141,10 @@ class FFMeta(commands.Cog):
             ] = False
     ):
         """Converts a given URL or attachment to an Opus file"""
+        if bitrate == 0:
+            bitrate = 0.5
+        if mono:
+            bitrate = min(bitrate, 256)
         filename = "opusinated.ogg"
         if url is None:
             if attachment is None:
