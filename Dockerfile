@@ -43,7 +43,13 @@ fonts-liberation \
 libappindicator1 \
 libnss3 \
 lsb-release \
-xdg-utils 
+xdg-utils \
+chromium \
+chromium-common \
+chromium-driver \
+chromium-sandbox \
+chromium-shell \
+webext-ublock-origin-chromium
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     traceroute \
