@@ -31,6 +31,10 @@ class ScreenshotCog(commands.Cog):
             self.chrome_options.add_argument("--disable-dev-shm-usage")
             self.chrome_options.add_argument("--disable-setuid-sandbox")
             self.log.warning("Running as root, disabling chrome sandbox.")
+        self.chrome_options.add_argument(
+            "--user-agent=Mozi11a/5.0 "
+            "(X11; Linux x86_64) AppleWebKit/537.36 (KHTML, Like Gecko) Chrome/121.9.6167.160 Safari/537.36"
+        )
 
         prefs = {
             "download.open_pdf_in_system_reader": False,
