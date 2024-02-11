@@ -497,7 +497,7 @@ class YTDLCog(commands.Cog):
                         file=upload_file,
                         embed=discord.Embed(
                             title=f"Downloaded {title}!",
-                            description="Views: {:,} | Likes: {:,}".format(views, likes),
+                            description="Views: {:,} | Likes: {:,}".format(views or 0, likes or 0),
                             colour=discord.Colour.green(),
                             timestamp=discord.utils.utcnow(),
                             url=webpage_url
