@@ -38,8 +38,6 @@ class ScreenshotCog(commands.Cog):
 
         prefs = {
             "download.open_pdf_in_system_reader": False,
-            # "download.prompt_for_download": True,
-            # "download.default_directory": "/dev/null",
             "plugins.always_open_pdf_externally": False,
             "download_restrictions": 3,
         }

@@ -411,18 +411,18 @@ class YTDLCog(commands.Cog):
                         trim_start, trim_end = snip, None
                     trim_start = trim_start or "00:00:00"
                     trim_end = trim_end or extracted_info.get("duration_string", "00:30:00")
-                    new_file = temp_dir / ("output." + file.suffix)
+                    new_file = temp_dir / ("output" + file.suffix)
                     args = [
                         "-hwaccel",
                         "auto",
-                        "-ss",
-                        trim_start,
                         "-i",
                         str(file),
+                        "-ss",
+                        trim_start,
                         "-to",
                         trim_end,
                         "-preset",
-                        "faster",
+                        "fast",
                         "-crf",
                         "28",
                         "-deadline",
@@ -447,7 +447,7 @@ class YTDLCog(commands.Cog):
                                 timestamp=discord.utils.utcnow()
                             )
                         )
-                        self.log.debug("Running command: ffmpeg %s", " ".join(args))
+                        self.log.debug("Running command: 'ffmpeg %s'", " ".join(args))
                         process = await asyncio.create_subprocess_exec(
                             "ffmpeg",
                             *args,
@@ -455,6 +455,8 @@ class YTDLCog(commands.Cog):
                             stderr=asyncio.subprocess.PIPE
                         )
                         stdout, stderr = await process.communicate()
+                        self.log.debug("STDOUT:\n%r", stdout.decode())
+                        self.log.debug("STDERR:\n%r", stderr.decode())
                         if process.returncode != 0:
                             return await ctx.edit(
                                 embed=discord.Embed(
@@ -466,7 +468,7 @@ class YTDLCog(commands.Cog):
                             )
                         file = new_file
                 
-                if audio_only and file.suffix  != ".m4a":
+                if audio_only and file.suffix != ".m4a":
                     self.log.info("Converting %r to m4a.", file)
                     file = await asyncio.to_thread(self.convert_to_m4a, file)
 
