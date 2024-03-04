@@ -4,6 +4,10 @@ import logging
 import sys
 import traceback
 import typing
+from threading import Thread, Event
+import time
+import random
+import httpx
 
 import uvicorn
 from web import app
@@ -13,6 +17,52 @@ import discord
 from discord.ext import commands
 from rich.logging import RichHandler
 from conf import CONFIG
+
+
+class KillableThread(Thread):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.kill = Event()
+
+
+class KumaThread(KillableThread):
+    def __init__(self, url: str, interval: float = 60.0):
+        super().__init__(target=self.run)
+        self.daemon = True
+        self.log = logging.getLogger("philip.status")
+        self.url = url
+        self.interval = interval
+        self.kill = Event()
+        self.retries = 0
+    
+    def calculate_backoff(self) -> float:
+        rnd = random.uniform(0, 1)
+        retries = min(self.retries, 1000)
+        t = (2 * 2 ** retries) + rnd
+        self.log.debug("Backoff: 2 * (2 ** %d) + %f = %f", retries, rnd, t)
+        # T can never exceed self.interval
+        return max(0, min(self.interval, t))
+    
+    def run(self) -> None:
+        with httpx.Client(http2=True) as client:
+            while not self.kill.is_set():
+                start_time = time.time()
+                try:
+                    self.retries += 1
+                    response = client.get(self.url)
+                    response.raise_for_status()
+                except httpx.HTTPError as error:
+                    self.log.error("Failed to connect to uptime-kuma: %r: %r", self.url, error, exc_info=error)
+                    timeout = self.calculate_backoff()
+                    self.log.warning("Waiting %d seconds before retrying ping.", timeout)
+                    time.sleep(timeout)
+                    continue
+
+                self.retries = 0
+                end_time = time.time()
+                timeout = self.interval - (end_time - start_time)
+                self.kill.wait(timeout)
+
 
 log = logging.getLogger("jimmy")
 CONFIG.setdefault("logging", {})
@@ -45,8 +95,15 @@ class Client(commands.Bot):
     def __init_(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.web: typing.Optional[asyncio.Task] = None
+        self.uptime_thread = None
 
     async def start(self, token: str, *, reconnect: bool = True) -> None:
+        if CONFIG["jimmy"].get("uptime_kuma_url"):
+            self.uptime_thread = KumaThread(
+                CONFIG["jimmy"]["uptime_kuma_url"], 
+                CONFIG["jimmy"].get("uptime_kuma_interval", 60.0)
+            )
+            self.uptime_thread.start()
         app.state.bot = self
         config = uvicorn.Config(
             app,
@@ -63,6 +120,9 @@ class Client(commands.Bot):
     async def close(self) -> None:
         if self.web:
             self.web.cancel()
+        if self.thread:
+            self.thread.kill.set()
+            await asyncio.get_event_loop().run_in_executor(None, self.thread.join)
         await super().close()
 
 
