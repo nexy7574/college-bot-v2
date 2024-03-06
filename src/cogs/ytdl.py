@@ -82,23 +82,34 @@ class YTDLCog(commands.Cog):
             await db.commit()
         return
 
-    async def save_link(self, message: discord.Message, webpage_url: str, format_id: str, attachment_index: int = 0):
+    async def save_link(
+            self,
+            message: discord.Message,
+            webpage_url: str,
+            format_id: str,
+            attachment_index: int = 0,
+            *,
+            snip: typing.Optional[str] = None
+    ):
         """
         Saves a link to discord to prevent having to re-download it.
         :param message: The download message with the attachment.
         :param webpage_url: The "webpage_url" key of the metadata
         :param format_id: The "format_Id" key of the metadata
         :param attachment_index: The index of the attachment. Defaults to 0
+        :param snip: The start and end time to snip the video. e.g. 00:00:00-00:10:00
         :return: The created hash key
         """
+        snip = snip or '*'
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
-            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}:{snip}".encode()).hexdigest()
             self.log.debug(
-                "Saving %r (%r:%r) with message %d>%d, index %d",
+                "Saving %r (%r:%r:%r) with message %d>%d, index %d",
                 _hash,
                 webpage_url,
                 format_id,
+                snip,
                 message.channel.id,
                 message.id,
                 attachment_index
@@ -117,20 +128,27 @@ class YTDLCog(commands.Cog):
             await db.commit()
             return _hash
 
-    async def get_saved(self, webpage_url: str, format_id: str) -> typing.Optional[str]:
+    async def get_saved(
+            self,
+            webpage_url: str,
+            format_id: str,
+            snip: str
+    ) -> typing.Optional[str]:
         """
         Attempts to retrieve the attachment URL of a previously saved download.
         :param webpage_url: The webpage url
         :param format_id: The format ID
+        :param snip: The start and end time to snip the video. e.g. 00:00:00-00:10:00
         :return: the URL, if found and valid.
         """
         await self._init_db()
         async with aiosqlite.connect("./data/ytdl.db") as db:
-            _hash = hashlib.md5(f"{webpage_url}:{format_id}".encode()).hexdigest()
+            _hash = hashlib.md5(f"{webpage_url}:{format_id}:{snip}".encode()).hexdigest()
             self.log.debug(
-                "Attempting to find a saved download for '%s:%s' (%r).",
+                "Attempting to find a saved download for '%s:%s:%s' (%r).",
                 webpage_url,
                 format_id,
+                snip,
                 _hash
             )
             cursor = await db.execute(
@@ -160,7 +178,7 @@ class YTDLCog(commands.Cog):
             except IndexError:
                 self.log.debug("Attachment index %d is out of range (%r)", attachment_index, message.attachments)
                 return
-    
+
     def convert_to_m4a(self, file: Path) -> Path:
         """
         Converts a file to m4a format.
@@ -229,7 +247,6 @@ class YTDLCog(commands.Cog):
             snip: typing.Annotated[
                 typing.Optional[str],
                 discord.Option(
-                    str,
                     description="A start and end position to trim. e.g. 00:00:00-00:10:00.",
                     required=False
                 )
@@ -347,7 +364,7 @@ class YTDLCog(commands.Cog):
                         colour=self.colours.get(domain, discord.Colour.og_blurple())
                     ).set_footer(text="Downloading (step 2/10)").set_thumbnail(url=thumbnail_url)
                 )
-                previous = await self.get_saved(webpage_url, extracted_info["format_id"])
+                previous = await self.get_saved(webpage_url, extracted_info["format_id"], snip or '*')
                 if previous:
                     await ctx.edit(
                         content=previous,
@@ -467,7 +484,7 @@ class YTDLCog(commands.Cog):
                                 )
                             )
                         file = new_file
-                
+
                 if audio_only and file.suffix != ".m4a":
                     self.log.info("Converting %r to m4a.", file)
                     file = await asyncio.to_thread(self.convert_to_m4a, file)
@@ -505,7 +522,7 @@ class YTDLCog(commands.Cog):
                             url=webpage_url
                         )
                     )
-                    await self.save_link(msg, webpage_url, chosen_format_id)
+                    await self.save_link(msg, webpage_url, chosen_format_id, snip=snip or '*')
                 except discord.HTTPException as e:
                     self.log.error(e, exc_info=True)
                     return await ctx.edit(
