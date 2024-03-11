@@ -244,7 +244,7 @@ class NetworkCog(commands.Cog):
         for page in paginator.pages:
             await ctx.respond(page)
     
-    @commands.slash_command(name="what-are-matthews-bank-details-for-the-80th-time")
+    @commands.slash_command(name="what-are-matthews-bank-details")
     async def matthew_bank(self, ctx: discord.ApplicationContext):
         """For the 80th time"""
         f = Path.cwd() / "assets" / "sensitive" / "matthew-bank.webp"
