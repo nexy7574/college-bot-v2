@@ -242,6 +242,16 @@ class NetworkCog(commands.Cog):
             paginator.add_line(f"Error: {e}")
         for page in paginator.pages:
             await ctx.respond(page)
+    
+    @commands.slash_command(name="what-are-matthews-bank-details-for-the-80th-time")
+    async def matthew_bank(self, ctx: discord.ApplicationContext):
+        """For the 80th time"""
+        f = Path.cwd() / "assets" / "sensitive" / "matthew-bank.webp"
+        if not f.exists():
+            return await ctx.respond("Idk")
+        else:
+            await ctx.defer()
+            await ctx.respond(file=discord.File(f))
 
 
 def setup(bot):

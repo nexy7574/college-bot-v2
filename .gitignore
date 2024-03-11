@@ -311,3 +311,4 @@ pyrightconfig.json
 cookies.txt
 config.toml
 chrome/
+src/assets/sensitive/*
