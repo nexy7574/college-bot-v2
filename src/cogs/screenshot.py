@@ -16,6 +16,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 
+from conf import CONFIG
+
 
 class ScreenshotCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -107,8 +109,8 @@ class ScreenshotCog(commands.Cog):
         start_init = time.time()
         try:
             options = copy.copy(self.chrome_options)
-            if use_proxy:
-                options.add_argument("--proxy-server=http://127.0.0.1:8888")
+            if use_proxy and (server := CONFIG["screenshot"].get("proxy")):
+                options.add_argument("--proxy-server=" + server)
             service = await asyncio.to_thread(ChromeService)
             driver: webdriver.Chrome = await asyncio.to_thread(
                 webdriver.Chrome,

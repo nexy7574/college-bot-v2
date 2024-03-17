@@ -28,6 +28,7 @@ try:
     CONFIG.setdefault("jimmy", {})
     CONFIG.setdefault("ollama", {})
     CONFIG.setdefault("rss", {"meta": {"channel": None}})
+    CONFIG.setdefault("screenshot", {})
     CONFIG.setdefault(
         "server",
         {
