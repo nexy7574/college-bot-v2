@@ -5,6 +5,7 @@ import logging
 import os
 import tempfile
 import time
+import copy
 from urllib.parse import urlparse
 
 import discord
@@ -76,7 +77,8 @@ class ScreenshotCog(commands.Cog):
             load_timeout: int = 10,
             render_timeout: int = None,
             eager: bool = None,
-            resolution: str = "1920x1080"
+            resolution: str = "1920x1080",
+            use_proxy: bool = False
     ):
         """Screenshots a webpage."""
         await ctx.defer()
@@ -104,11 +106,14 @@ class ScreenshotCog(commands.Cog):
 
         start_init = time.time()
         try:
+            options = copy.copy(self.chrome_options)
+            if use_proxy:
+                options.add_argument("--proxy-server=http://127.0.0.1:8888")
             service = await asyncio.to_thread(ChromeService)
             driver: webdriver.Chrome = await asyncio.to_thread(
                 webdriver.Chrome,
                 service=service,
-                options=self.chrome_options
+                options=options
             )
             driver.set_page_load_timeout(load_timeout)
             if resolution:
