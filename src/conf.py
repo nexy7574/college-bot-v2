@@ -29,6 +29,7 @@ try:
     CONFIG.setdefault("ollama", {})
     CONFIG.setdefault("rss", {"meta": {"channel": None}})
     CONFIG.setdefault("screenshot", {})
+    CONFIG.setdefault("quote_a", {"channel": None})
     CONFIG.setdefault(
         "server",
         {

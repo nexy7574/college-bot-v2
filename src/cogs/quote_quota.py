@@ -67,9 +67,9 @@ class QuoteQuota(commands.Cog):
     ):
         """Checks the quote quota for the quotes channel."""
         now = discord.utils.utcnow()
-        oldest = now - timedelta(days=7)
+        oldest = now - timedelta(days=days)
         await ctx.defer()
-        channel = self.quotes_channel
+        channel = self.quotes_channel or discord.utils.get(ctx.guild.text_channels, name="quotes")
         if not channel:
             return await ctx.respond(":x: Cannot find quotes channel.")
 
