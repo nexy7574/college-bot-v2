@@ -133,7 +133,7 @@ bot = Client(
     debug_guilds=CONFIG["jimmy"].get("debug_guilds")
 )
 
-for ext in ("ytdl", "net", "screenshot", "ollama", "ffmeta"):
+for ext in ("ytdl", "net", "screenshot", "ollama", "ffmeta", "quote_quota"):
     try:
         bot.load_extension(f"cogs.{ext}")
     except discord.ExtensionError as e:

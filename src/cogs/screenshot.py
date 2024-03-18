@@ -168,6 +168,7 @@ class ScreenshotCog(commands.Cog):
         end_save = time.time()
 
         if len(await asyncio.to_thread(file.getvalue)) > 24 * 1024 * 1024:
+            await ctx.edit(content="Compressing screenshot...")
             start_compress = time.time()
             file = await asyncio.to_thread(self.compress_png, file)
             fn = "screenshot.webp"

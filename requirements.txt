@@ -18,3 +18,4 @@ humanize~=4.9
 redis~=5.0
 beautifulsoup4~=4.12
 lxml~=5.1
+matplotlib~=3.8
