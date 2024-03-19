@@ -145,6 +145,18 @@ class QuoteQuota(commands.Cog):
             authors.setdefault(name, 0)
             authors[name] += 1
 
+        if not authors:
+            if total:
+                return await ctx.edit(
+                    content="No valid messages found in the last {!s} days. "
+                            "Make sure quotes are formatted properly ending with ` - AuthorName`"
+                            " (e.g. `\"This is my quote\" - Jimmy`)".format(days)
+                )
+            else:
+                return await ctx.edit(
+                    content="No messages found in the last {!s} days.".format(days)
+                )
+
         file = await asyncio.to_thread(
             self.generate_pie_chart,
             list(authors.keys()),
