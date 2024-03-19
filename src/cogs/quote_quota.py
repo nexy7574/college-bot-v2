@@ -37,7 +37,7 @@ class QuoteQuota(commands.Cog):
         """
 
         def pct(v: int):
-            return f"{v / sum(counts) * 100:.1f}% ({v})"
+            return f"{v:.1f}% ({(v / 100) * sum(counts):0f})"
 
         fig, ax = plt.subplots()
         ax.pie(
