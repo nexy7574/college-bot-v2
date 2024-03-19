@@ -57,20 +57,19 @@ class QuoteQuota(commands.Cog):
             # And now filter out any -1% counts
             counts = [c for c in counts if c != -1]
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10, 10))
         ax.pie(
             counts,
             labels=usernames,
             autopct=pct,
             startangle=90,
             radius=1.5,
-            figsize=(10, 10)
         )
         fio = io.BytesIO()
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
-        fig.savefig(fio, format='jpg')
+        fig.savefig(fio, format='png')
         fio.seek(0)
-        return discord.File(fio, filename="pie.jpeg")
+        return discord.File(fio, filename="pie.png")
 
     @commands.slash_command()
     async def quota(
