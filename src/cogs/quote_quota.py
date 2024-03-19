@@ -57,6 +57,18 @@ class QuoteQuota(commands.Cog):
             # And now filter out any -1% counts
             counts = [c for c in counts if c != -1]
 
+        mapping = {}
+        for i, author in enumerate(usernames):
+            mapping[author] = counts[i]
+
+        # Sort the authors by count
+        new_mapping = {}
+        for author, count in sorted(mapping.items(), key=lambda x: x[1], reverse=True):
+            new_mapping[author] = count
+
+        usernames = list(new_mapping.keys())
+        counts = list(new_mapping.values())
+
         fig, ax = plt.subplots(figsize=(7, 7))
         ax.pie(
             counts,
