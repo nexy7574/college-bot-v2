@@ -43,7 +43,6 @@ class QuoteQuota(commands.Cog):
         )
         ax.legend(loc="upper right")
         fig.tight_layout()
-        fig.title("Quote Quota")
         fio = io.BytesIO()
         fig.savefig(fio, format='jpg')
         fio.seek(0)
