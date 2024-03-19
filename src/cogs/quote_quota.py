@@ -119,9 +119,9 @@ class QuoteQuota(commands.Cog):
                 filtered_messages += 1
                 continue
             if message.attachments:
-                regex = r".*\s+-\s*@?([\w\s]+)"
+                regex = r".*\s*-\s*@?([\w\s]+)"
             else:
-                regex = r".+\s*-\s*@?([\w\s]+)"
+                regex = r".+\s+-\s*@?([\w\s]+)"
 
             if not (m := re.match(regex, str(message.clean_content))):
                 filtered_messages += 1
@@ -137,6 +137,9 @@ class QuoteQuota(commands.Cog):
                     continue
             elif name in self.names:
                 name = self.names[name]
+            elif name.isdigit():
+                filtered_messages += 1
+                continue
 
             authors.setdefault(name, 0)
             authors[name] += 1
