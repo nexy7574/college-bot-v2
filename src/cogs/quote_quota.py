@@ -35,11 +35,15 @@ class QuoteQuota(commands.Cog):
         :param counts: The number of times the username appears in the chat
         :returns: The pie chart image
         """
+
+        def pct(v: int):
+            return f"{v / sum(counts) * 100:.1f}% ({v})"
+
         fig, ax = plt.subplots()
         ax.pie(
             counts,
             labels=usernames,
-            autopct='%1.1f%% (%d)',
+            autopct=pct,
         )
         fio = io.BytesIO()
         fig.savefig(fio, format='jpg', bbox_inches='tight')
