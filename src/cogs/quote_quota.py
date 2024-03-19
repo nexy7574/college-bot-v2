@@ -42,7 +42,6 @@ class QuoteQuota(commands.Cog):
             autopct='%1.1f%%',
         )
         ax.legend(loc="upper right")
-        fig.tight_layout()
         fio = io.BytesIO()
         fig.savefig(fio, format='jpg')
         fio.seek(0)
