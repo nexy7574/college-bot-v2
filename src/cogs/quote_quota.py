@@ -39,11 +39,10 @@ class QuoteQuota(commands.Cog):
         ax.pie(
             counts,
             labels=usernames,
-            autopct='%1.1f%%',
+            autopct='%1.1f%% (%d)',
         )
-        ax.legend(loc="upper right")
         fio = io.BytesIO()
-        fig.savefig(fio, format='jpg')
+        fig.savefig(fio, format='jpg', bbox_inches='tight')
         fio.seek(0)
         return discord.File(fio, filename="pie.jpeg")
 
