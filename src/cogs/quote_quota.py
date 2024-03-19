@@ -63,10 +63,10 @@ class QuoteQuota(commands.Cog):
             labels=usernames,
             autopct=pct,
             startangle=90,
-            radius=1.3,
+            radius=1.2,
         )
+        fig.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.3, hspace=0.4)
         fio = io.BytesIO()
-        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
         fig.savefig(fio, format='png')
         fio.seek(0)
         return discord.File(fio, filename="pie.png")
