@@ -12,6 +12,7 @@ from conf import CONFIG
 
 
 class QuoteQuota(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
         self.quotes_channel_id = CONFIG["quote_a"].get("channel_id")
@@ -25,8 +26,8 @@ class QuoteQuota(commands.Cog):
 
     @staticmethod
     def generate_pie_chart(
-            usernames: Iterable[str],
-            counts: Iterable[int],
+            usernames: list[str],
+            counts: list[int],
     ) -> discord.File:
         """
         Converts the given username and count tuples into a nice pretty pie chart.
@@ -39,6 +40,19 @@ class QuoteQuota(commands.Cog):
         def pct(v: int):
             return f"{v:.1f}% ({(v / 100) * sum(counts):0f})"
 
+        other = []
+        # Any authors with less than 5% of the total count will be grouped into "other"
+        for i, author in enumerate(usernames.copy()):
+            if (c := counts[i]) / sum(counts) < 0.05:
+                other.append(c)
+                counts[i] = -1
+                usernames.remove(author)
+        if other:
+            usernames.append("Other")
+            counts.append(sum(other))
+        # And now filter out any -1% counts
+        counts = [c for c in counts if c != -1]
+
         fig, ax = plt.subplots()
         ax.pie(
             counts,
@@ -46,7 +60,7 @@ class QuoteQuota(commands.Cog):
             autopct=pct,
         )
         fio = io.BytesIO()
-        fig.savefig(fio, format='jpg', bbox_inches='tight')
+        fig.savefig(fio, format='jpg')
         fio.seek(0)
         return discord.File(fio, filename="pie.jpeg")
 
