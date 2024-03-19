@@ -16,6 +16,7 @@ class QuoteQuota(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.quotes_channel_id = CONFIG["quote_a"].get("channel_id")
+        self.names = CONFIG["quote_a"].get("names", {})
 
     @property
     def quotes_channel(self) -> discord.TextChannel | None:
@@ -28,36 +29,41 @@ class QuoteQuota(commands.Cog):
     def generate_pie_chart(
             usernames: list[str],
             counts: list[int],
+            no_other: bool = False
     ) -> discord.File:
         """
         Converts the given username and count tuples into a nice pretty pie chart.
 
         :param usernames: The usernames
         :param counts: The number of times the username appears in the chat
+        :param no_other: Disables the "other" grouping
         :returns: The pie chart image
         """
 
         def pct(v: int):
-            return f"{v:.1f}% ({(v / 100) * sum(counts):0f})"
+            return f"{v:.1f}% ({round((v / 100) * sum(counts))})"
 
-        other = []
-        # Any authors with less than 5% of the total count will be grouped into "other"
-        for i, author in enumerate(usernames.copy()):
-            if (c := counts[i]) / sum(counts) < 0.05:
-                other.append(c)
-                counts[i] = -1
-                usernames.remove(author)
-        if other:
-            usernames.append("Other")
-            counts.append(sum(other))
-        # And now filter out any -1% counts
-        counts = [c for c in counts if c != -1]
+        if no_other is False:
+            other = []
+            # Any authors with less than 5% of the total count will be grouped into "other"
+            for i, author in enumerate(usernames.copy()):
+                if (c := counts[i]) / sum(counts) < 0.05:
+                    other.append(c)
+                    counts[i] = -1
+                    usernames.remove(author)
+            if other:
+                usernames.append("Other")
+                counts.append(sum(other))
+            # And now filter out any -1% counts
+            counts = [c for c in counts if c != -1]
 
         fig, ax = plt.subplots()
         ax.pie(
             counts,
             labels=usernames,
             autopct=pct,
+            startangle=90,
+            radius=2
         )
         fio = io.BytesIO()
         fig.savefig(fio, format='jpg')
@@ -77,6 +83,15 @@ class QuoteQuota(commands.Cog):
                     default=7,
                     min_value=1,
                     max_value=365
+                )
+            ],
+            merge_other: Annotated[
+                bool,
+                discord.Option(
+                    bool,
+                    name="merge_other",
+                    description="Whether to merge authors with less than 5% of the total count into 'Other'.",
+                    default=True
                 )
             ]
     ):
@@ -113,15 +128,23 @@ class QuoteQuota(commands.Cog):
             name = m.group(1)
             name = name.strip().title()
             if name == "Me":
-                filtered_messages += 1
-                continue
+                name = message.author.name.strip().casefold()
+                if name in self.names:
+                    name = self.names[name]
+                else:
+                    filtered_messages += 1
+                    continue
+            elif name in self.names:
+                name = self.names[name]
+
             authors.setdefault(name, 0)
             authors[name] += 1
 
         file = await asyncio.to_thread(
             self.generate_pie_chart,
             list(authors.keys()),
-            list(authors.values())
+            list(authors.values()),
+            merge_other
         )
         return await ctx.edit(
             content="{:,} messages (out of {:,}) were filtered (didn't follow format?)".format(
