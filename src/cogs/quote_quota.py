@@ -131,12 +131,12 @@ class QuoteQuota(commands.Cog):
             if name == "Me":
                 name = message.author.name.strip().casefold()
                 if name in self.names:
-                    name = self.names[name]
+                    name = self.names[name].title()
                 else:
                     filtered_messages += 1
                     continue
-            elif name in self.names:
-                name = self.names[name]
+            elif name.strip().casefold() in self.names:
+                name = self.names[name].title()
             elif name.isdigit():
                 filtered_messages += 1
                 continue
