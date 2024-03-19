@@ -86,15 +86,18 @@ class QuoteQuota(commands.Cog):
                 filtered_messages += 1
                 continue
             if message.attachments:
-                regex = r".*\s*-\s*(\w+)"
+                regex = r".*\s+-\s*@?([\w\s]+)"
             else:
-                regex = r".+\s*-\s*(\w+)"
+                regex = r".+\s*-\s*@?([\w\s]+)"
 
-            if not (m := re.match(regex, message.content)):
+            if not (m := re.match(regex, str(message.clean_content))):
                 filtered_messages += 1
                 continue
             name = m.group(1)
             name = name.strip().title()
+            if name == "Me":
+                filtered_messages += 1
+                continue
             authors.setdefault(name, 0)
             authors[name] += 1
 
