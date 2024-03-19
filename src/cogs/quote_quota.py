@@ -57,13 +57,13 @@ class QuoteQuota(commands.Cog):
             # And now filter out any -1% counts
             counts = [c for c in counts if c != -1]
 
-        fig, ax = plt.subplots(figsize=(10, 10))
+        fig, ax = plt.subplots(figsize=(7, 7))
         ax.pie(
             counts,
             labels=usernames,
             autopct=pct,
             startangle=90,
-            radius=1.5,
+            radius=1.3,
         )
         fio = io.BytesIO()
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
