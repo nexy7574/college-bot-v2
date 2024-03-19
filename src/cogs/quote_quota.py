@@ -66,6 +66,7 @@ class QuoteQuota(commands.Cog):
             radius=2
         )
         fio = io.BytesIO()
+        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
         fig.savefig(fio, format='jpg')
         fio.seek(0)
         return discord.File(fio, filename="pie.jpeg")
