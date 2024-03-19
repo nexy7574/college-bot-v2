@@ -63,7 +63,8 @@ class QuoteQuota(commands.Cog):
             labels=usernames,
             autopct=pct,
             startangle=90,
-            radius=2
+            radius=1.5,
+            figsize=(10, 10)
         )
         fio = io.BytesIO()
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
