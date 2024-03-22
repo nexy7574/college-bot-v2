@@ -212,7 +212,6 @@ class OllamaGetPrompt(discord.ui.Modal):
 
     async def callback(self, interaction: Interaction):
         await interaction.response.defer()
-        self.ctx.interaction = interaction
         self.value = self.children[0].value
         self.stop()
 
@@ -365,6 +364,7 @@ class Ollama(commands.Cog):
             await v.wait()
             query = v.user_prompt or query
             system_query = v.system_prompt
+            await ctx.delete(delay=0.1)
 
         model = model.casefold()
         try:
