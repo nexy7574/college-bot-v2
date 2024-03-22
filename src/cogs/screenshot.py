@@ -5,6 +5,7 @@ import logging
 import os
 import tempfile
 import time
+import copy
 from urllib.parse import urlparse
 
 import discord
@@ -14,6 +15,8 @@ from PIL import Image
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
+
+from conf import CONFIG
 
 
 class ScreenshotCog(commands.Cog):
@@ -76,7 +79,8 @@ class ScreenshotCog(commands.Cog):
             load_timeout: int = 10,
             render_timeout: int = None,
             eager: bool = None,
-            resolution: str = "1920x1080"
+            resolution: str = "1920x1080",
+            use_proxy: bool = False
     ):
         """Screenshots a webpage."""
         await ctx.defer()
@@ -104,11 +108,14 @@ class ScreenshotCog(commands.Cog):
 
         start_init = time.time()
         try:
+            options = copy.copy(self.chrome_options)
+            if use_proxy and (server := CONFIG["screenshot"].get("proxy")):
+                options.add_argument("--proxy-server=" + server)
             service = await asyncio.to_thread(ChromeService)
             driver: webdriver.Chrome = await asyncio.to_thread(
                 webdriver.Chrome,
                 service=service,
-                options=self.chrome_options
+                options=options
             )
             driver.set_page_load_timeout(load_timeout)
             if resolution:
@@ -161,6 +168,7 @@ class ScreenshotCog(commands.Cog):
         end_save = time.time()
 
         if len(await asyncio.to_thread(file.getvalue)) > 24 * 1024 * 1024:
+            await ctx.edit(content="Compressing screenshot...")
             start_compress = time.time()
             file = await asyncio.to_thread(self.compress_png, file)
             fn = "screenshot.webp"
