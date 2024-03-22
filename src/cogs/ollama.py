@@ -239,13 +239,17 @@ class PromptSelector(discord.ui.View):
         await interaction.response.send_modal(modal)
         await modal.wait()
         self.system_prompt = modal.value
+        self.update_ui()
+        await interaction.edit_original_response(view=self)
 
-    @discord.ui.button(label="Set System Prompt", style=discord.ButtonStyle.primary, custom_id="usr")
+    @discord.ui.button(label="Set User Prompt", style=discord.ButtonStyle.primary, custom_id="usr")
     async def set_user_prompt(self, btn: discord.ui.Button, interaction: Interaction):
         modal = OllamaGetPrompt(self.ctx)
         await interaction.response.send_modal(modal)
         await modal.wait()
         self.user_prompt = modal.value
+        self.update_ui()
+        await interaction.edit_original_response(view=self)
 
     @discord.ui.button(label="Done", style=discord.ButtonStyle.success, custom_id="done")
     async def done(self, btn: discord.ui.Button, interaction: Interaction):
