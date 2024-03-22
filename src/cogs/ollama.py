@@ -241,7 +241,7 @@ class PromptSelector(discord.ui.View):
         self.system_prompt = modal.value
 
     @discord.ui.button(label="Set System Prompt", style=discord.ButtonStyle.primary, custom_id="usr")
-    async def set_system_prompt(self, btn: discord.ui.Button, interaction: Interaction):
+    async def set_user_prompt(self, btn: discord.ui.Button, interaction: Interaction):
         modal = OllamaGetPrompt(self.ctx)
         await interaction.response.send_modal(modal)
         await modal.wait()
@@ -344,6 +344,7 @@ class Ollama(commands.Cog):
                 )
             ]
     ):
+        system_query = None
         if context is not None:
             if not self.history.get_thread(context):
                 await ctx.respond("Invalid context key.")
@@ -359,6 +360,7 @@ class Ollama(commands.Cog):
             await ctx.respond("Select edit your prompts, as desired. Click done when you want to continue.", view=v)
             await v.wait()
             query = v.user_prompt or query
+            system_query = v.system_prompt
 
         model = model.casefold()
         try:
